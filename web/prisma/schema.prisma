@@ -1,0 +1,119 @@
+// Atria — hackathon schema. Mirrors docs/SCHEMA.md entity-for-entity.
+// Datetimes/dates are stored as ISO-8601 STRINGS (with timezone offset) so the
+// web↔solver contract round-trips byte-exact; SQLite DateTime would normalize to UTC.
+
+generator client {
+  provider = "prisma-client"
+  output   = "../lib/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model Person {
+  id               String  @id
+  name             String
+  level            String // F1 | F2 | F3
+  fte              Float
+  eligibleServices Json // string[] of service codes
+  clinicDay        String? // MON..SUN — fixed weekly continuity-clinic half-day
+
+  assignments Assignment[]
+  absences    Absence[]
+}
+
+model Service {
+  id       String @id
+  name     String
+  code     String
+  family   String // procedural | imaging | inpatient | consult | ambulatory | backup
+  kind     String // rotation | call | clinic | jeopardy
+  coverage Json // { minPerWeekday, minPerWeekendDay }
+
+  slots Slot[]
+}
+
+model Slot {
+  id        String @id
+  serviceId String
+  start     String // ISO-8601 datetime with offset
+  end       String // ISO-8601 datetime with offset
+  grain     String // block | week | day | call-night | halfday
+  roleIndex Int
+
+  service     Service      @relation(fields: [serviceId], references: [id])
+  assignments Assignment[]
+
+  @@index([serviceId])
+  @@index([grain])
+}
+
+model Assignment {
+  id                  String  @id
+  slotId              String
+  personId            String
+  status              String // draft | published
+  locked              Boolean @default(false)
+  provenance          String // solver | manual | swap | repair | import
+  createdInVersion    Int
+  supersededInVersion Int?
+
+  slot   Slot   @relation(fields: [slotId], references: [id])
+  person Person @relation(fields: [personId], references: [id])
+  lock   Lock?
+
+  @@index([slotId])
+  @@index([personId])
+  @@index([status, supersededInVersion])
+}
+
+model Absence {
+  id         String @id
+  personId   String
+  start      String // YYYY-MM-DD
+  end        String // YYYY-MM-DD
+  type       String // vacation | sick | leave | away | conference
+  reasonCode String // opaque code, never free text (no PHI)
+  status     String // pending | approved | denied
+
+  person Person @relation(fields: [personId], references: [id])
+
+  @@index([personId])
+}
+
+model Rule {
+  id        String  @id
+  type      String // closed catalog, docs/SCHEMA.md
+  params    Json
+  level     String // hard | blocking | soft
+  tier      String? // must | should | nice (soft only)
+  scope     String
+  source    String?
+  text      String
+  confirmed Boolean
+  replay    Json? // { violationsLastYear }
+}
+
+model Lock {
+  assignmentId String  @id
+  by           String
+  reason       String
+  hard         Boolean
+
+  assignment Assignment @relation(fields: [assignmentId], references: [id])
+}
+
+model ScheduleVersion {
+  version     Int     @id
+  publishedAt String // ISO-8601 datetime
+  publishedBy String
+  parent      Int?
+  cause       Json? // { kind, absenceId? }
+  diff        Json? // { changed, peopleTouched, violations }
+  inputHash   String?
+  seed        Int?
+  // Typed override waiver, present only when blocking violations were overridden
+  // at publish (CLAUDE.md invariant 1). null on clean publishes.
+  override    Json? // { by, reason }
+}

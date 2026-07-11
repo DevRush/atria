@@ -1,0 +1,183 @@
+@import "tailwindcss";
+
+/* ---------------------------------------------------------------------------
+   Atria design tokens (CLAUDE.md design bar / SPEC §6)
+
+   - Density IS the polish: --row-h 28px, low radii, rare shadows.
+   - Hue is carried ONLY by the six assignment families; text short-codes
+     (CATH, ECHO, CCU, JEOP) are the identity carrier — color never sole carrier.
+   - RED IS RESERVED for publish-blocking violations (--status-block).
+     No family, chart or decoration may use it.
+   - Two hand-calibrated palettes: light + dark (muted, Linear-like).
+--------------------------------------------------------------------------- */
+
+:root {
+  /* Surfaces */
+  --background: oklch(0.985 0.002 260);
+  --surface: oklch(1 0 0);
+  --surface-raised: oklch(0.975 0.003 260);
+  --border: oklch(0.915 0.005 260);
+  --border-strong: oklch(0.85 0.007 260);
+  --foreground: oklch(0.235 0.012 260);
+  --muted-foreground: oklch(0.51 0.014 260);
+  --faint-foreground: oklch(0.65 0.012 260);
+  --accent: oklch(0.52 0.11 255); /* interactive accent — not a family hue */
+
+  /* Density */
+  --row-h: 28px;
+  --row-h-dense: 26px;
+  --cell-px: 8px;
+  --radius-1: 3px; /* chips, cells */
+  --radius-2: 5px; /* cards, inputs */
+
+  /* Six assignment families — the ONLY hue carriers.
+     procedural CATH/EP · imaging ECHO/NUC · inpatient CCU/CALL ·
+     consult CONSULT · ambulatory CLINIC · backup JEOP */
+  --family-procedural: oklch(0.5 0.085 55);
+  --family-procedural-bg: oklch(0.955 0.02 60);
+  --family-procedural-border: oklch(0.87 0.045 58);
+  --family-imaging: oklch(0.49 0.1 300);
+  --family-imaging-bg: oklch(0.955 0.02 300);
+  --family-imaging-border: oklch(0.875 0.05 300);
+  --family-inpatient: oklch(0.48 0.1 252);
+  --family-inpatient-bg: oklch(0.955 0.018 252);
+  --family-inpatient-border: oklch(0.875 0.05 252);
+  --family-consult: oklch(0.47 0.08 205);
+  --family-consult-bg: oklch(0.955 0.02 205);
+  --family-consult-border: oklch(0.87 0.05 205);
+  --family-ambulatory: oklch(0.47 0.08 152);
+  --family-ambulatory-bg: oklch(0.955 0.022 152);
+  --family-ambulatory-border: oklch(0.87 0.05 152);
+  --family-backup: oklch(0.47 0.075 330);
+  --family-backup-bg: oklch(0.955 0.016 330);
+  --family-backup-border: oklch(0.875 0.04 330);
+
+  /* Status. RED = publish-blocking violations ONLY. */
+  --status-block: oklch(0.54 0.2 27);
+  --status-block-bg: oklch(0.95 0.025 25);
+  --status-block-border: oklch(0.85 0.07 26);
+  --status-warn: oklch(0.55 0.12 75);
+  --status-warn-bg: oklch(0.96 0.035 85);
+  --status-warn-border: oklch(0.86 0.07 80);
+  --status-ok: oklch(0.52 0.1 152);
+  --status-ok-bg: oklch(0.96 0.025 152);
+
+  /* Scaffolding (weekends/holidays): luminance + line weight only, never hue. */
+  --scaffold-weekend: oklch(0.965 0.003 260);
+  --scaffold-holiday: oklch(0.94 0.004 260);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: oklch(0.19 0.008 262);
+    --surface: oklch(0.225 0.008 262);
+    --surface-raised: oklch(0.26 0.009 262);
+    --border: oklch(0.30 0.01 262);
+    --border-strong: oklch(0.37 0.012 262);
+    --foreground: oklch(0.92 0.005 260);
+    --muted-foreground: oklch(0.68 0.01 260);
+    --faint-foreground: oklch(0.54 0.01 260);
+    --accent: oklch(0.72 0.1 255);
+
+    --family-procedural: oklch(0.8 0.08 60);
+    --family-procedural-bg: oklch(0.28 0.03 58);
+    --family-procedural-border: oklch(0.4 0.05 58);
+    --family-imaging: oklch(0.79 0.09 300);
+    --family-imaging-bg: oklch(0.28 0.035 300);
+    --family-imaging-border: oklch(0.41 0.06 300);
+    --family-inpatient: oklch(0.79 0.09 252);
+    --family-inpatient-bg: oklch(0.28 0.035 252);
+    --family-inpatient-border: oklch(0.41 0.06 252);
+    --family-consult: oklch(0.8 0.08 205);
+    --family-consult-bg: oklch(0.28 0.03 205);
+    --family-consult-border: oklch(0.4 0.055 205);
+    --family-ambulatory: oklch(0.8 0.08 152);
+    --family-ambulatory-bg: oklch(0.28 0.03 152);
+    --family-ambulatory-border: oklch(0.4 0.055 152);
+    --family-backup: oklch(0.79 0.075 330);
+    --family-backup-bg: oklch(0.28 0.028 330);
+    --family-backup-border: oklch(0.4 0.05 330);
+
+    --status-block: oklch(0.7 0.18 26);
+    --status-block-bg: oklch(0.3 0.06 26);
+    --status-block-border: oklch(0.45 0.1 26);
+    --status-warn: oklch(0.78 0.12 80);
+    --status-warn-bg: oklch(0.29 0.04 80);
+    --status-warn-border: oklch(0.42 0.07 80);
+    --status-ok: oklch(0.76 0.1 152);
+    --status-ok-bg: oklch(0.28 0.035 152);
+
+    --scaffold-weekend: oklch(0.215 0.008 262);
+    --scaffold-holiday: oklch(0.245 0.009 262);
+  }
+}
+
+/* Expose tokens as Tailwind color utilities
+   (e.g. bg-family-cath? no — bg-family-procedural-bg, text-status-block). */
+@theme inline {
+  --color-background: var(--background);
+  --color-surface: var(--surface);
+  --color-surface-raised: var(--surface-raised);
+  --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+  --color-foreground: var(--foreground);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-faint-foreground: var(--faint-foreground);
+  --color-accent: var(--accent);
+
+  --color-family-procedural: var(--family-procedural);
+  --color-family-procedural-bg: var(--family-procedural-bg);
+  --color-family-procedural-border: var(--family-procedural-border);
+  --color-family-imaging: var(--family-imaging);
+  --color-family-imaging-bg: var(--family-imaging-bg);
+  --color-family-imaging-border: var(--family-imaging-border);
+  --color-family-inpatient: var(--family-inpatient);
+  --color-family-inpatient-bg: var(--family-inpatient-bg);
+  --color-family-inpatient-border: var(--family-inpatient-border);
+  --color-family-consult: var(--family-consult);
+  --color-family-consult-bg: var(--family-consult-bg);
+  --color-family-consult-border: var(--family-consult-border);
+  --color-family-ambulatory: var(--family-ambulatory);
+  --color-family-ambulatory-bg: var(--family-ambulatory-bg);
+  --color-family-ambulatory-border: var(--family-ambulatory-border);
+  --color-family-backup: var(--family-backup);
+  --color-family-backup-bg: var(--family-backup-bg);
+  --color-family-backup-border: var(--family-backup-border);
+
+  --color-status-block: var(--status-block);
+  --color-status-block-bg: var(--status-block-bg);
+  --color-status-block-border: var(--status-block-border);
+  --color-status-warn: var(--status-warn);
+  --color-status-warn-bg: var(--status-warn-bg);
+  --color-status-warn-border: var(--status-warn-border);
+  --color-status-ok: var(--status-ok);
+  --color-status-ok-bg: var(--status-ok-bg);
+
+  --color-scaffold-weekend: var(--scaffold-weekend);
+  --color-scaffold-holiday: var(--scaffold-holiday);
+
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+
+  --radius-r1: var(--radius-1);
+  --radius-r2: var(--radius-2);
+}
+
+/* Tabular numerals — every numeric column uses this. */
+@utility tnum {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Dense grid row: fixed height, centered content. */
+@utility row-dense {
+  height: var(--row-h);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  font-size: 13px;
+  line-height: 1.45;
+  -webkit-font-smoothing: antialiased;
+}

@@ -30,7 +30,7 @@ Density IS the polish: strong table geometry, ~26–30px rows, tabular numerals,
 
 ## Commands
 - Web: `cd web && npm run dev` (:3000) · `npm run build` · `npx prisma db push` / `npx prisma studio`
-- Solver: `cd solver && uv run uvicorn app.main:app --reload --port 8000` · tests: `uv run pytest`
+- Solver: `cd solver && .venv/bin/uvicorn app.main:app --reload --port 8000` · tests: `.venv/bin/pytest` (Python 3.13 venv at `solver/.venv`, pip-managed — no uv on this machine)
 - Claude API: model `claude-fable-5` via `@anthropic-ai/sdk`; key in `web/.env.local` as `ANTHROPIC_API_KEY` (never commit).
 
 ## Conventions
