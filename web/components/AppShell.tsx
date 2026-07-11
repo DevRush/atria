@@ -23,11 +23,12 @@ export function AppShell({
   children,
 }: {
   version: ScheduleVersion | null;
-  active: "schedule" | "rules" | "fairness" | "oncall";
+  active: "schedule" | "requests" | "rules" | "fairness" | "oncall";
   children: React.ReactNode;
 }) {
   const nav = [
     { key: "schedule", label: "Schedule", href: "/" },
+    { key: "requests", label: "Requests", href: "/requests" },
     { key: "rules", label: "Rules", href: "/rules" },
     { key: "fairness", label: "Fairness", href: "/fairness" },
     { key: "oncall", label: "On-Call", href: "/oncall" },

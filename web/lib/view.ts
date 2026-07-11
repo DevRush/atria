@@ -159,6 +159,65 @@ export const FAMILY_CLASS: Record<ServiceFamily, string> = {
   backup: "text-family-backup bg-family-backup-bg border-family-backup-border",
 };
 
+/** Coverage impact of a time-off request: which of the person's call/jeopardy
+ * assignments fall inside [start, end]. Empty = no coverage impact. */
+export function absenceImpact(
+  state: StateResponse,
+  personId: string,
+  start: string,
+  end: string,
+  assignments?: Assignment[]
+) {
+  const slotById = new Map(state.slots.map((s) => [s.id, s]));
+  const as = assignments ?? state.assignments;
+  const s = start.slice(0, 10);
+  const e = end.slice(0, 10);
+  const hits: { slotId: string; serviceId: string; date: string; kind: string }[] = [];
+  for (const a of as) {
+    if (a.personId !== personId) continue;
+    const slot = slotById.get(a.slotId);
+    if (!slot) continue;
+    const d = slot.start.slice(0, 10);
+    if (slot.grain === "call-night" && d >= s && d <= e) {
+      hits.push({ slotId: slot.id, serviceId: slot.serviceId, date: d, kind: "call" });
+    } else if (slot.grain === "week") {
+      const ws = slot.start.slice(0, 10);
+      const we = slot.end.slice(0, 10);
+      if (ws <= e && we >= s) hits.push({ slotId: slot.id, serviceId: slot.serviceId, date: ws, kind: "jeopardy" });
+    }
+  }
+  return hits;
+}
+
+/** Find a real, guaranteed coverage conflict from the live schedule — a fellow
+ * plus a 3-day window straddling one of their call nights. Used by the demo's
+ * "fill a sample conflict" button so it never depends on hardcoded dates. */
+export function findSampleConflict(
+  state: StateResponse,
+  excludePersonIds: string[] = []
+): { personId: string; start: string; end: string } | null {
+  const slotById = new Map(state.slots.map((s) => [s.id, s]));
+  const pendingPeople = new Set(
+    state.absences.filter((a) => a.status === "pending").map((a) => a.personId)
+  );
+  for (const p of state.people) {
+    if (excludePersonIds.includes(p.id) || pendingPeople.has(p.id)) continue;
+    const calls = state.assignments
+      .filter((a) => a.personId === p.id && slotById.get(a.slotId)?.grain === "call-night")
+      .map((a) => slotById.get(a.slotId)!.start.slice(0, 10))
+      .sort();
+    // pick a call at least a month out so notice weighting is sane
+    const target = calls.find((d) => d > "2026-10-01") ?? calls[0];
+    if (!target) continue;
+    const t = new Date(target + "T12:00:00");
+    const start = new Date(t.getTime() - 86400000);
+    const end = new Date(t.getTime() + 86400000);
+    const iso = (d: Date) => d.toISOString().slice(0, 10);
+    return { personId: p.id, start: iso(start), end: iso(end) };
+  }
+  return null;
+}
+
 export function initials(name: string): string {
   return name
     .split(" ")

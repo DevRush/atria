@@ -40,7 +40,12 @@ from .models import (
     Slot,
     SolveRequest,
     SolveResponse,
+    ValidateRequest,
 )
+# Solver self-checks its repair candidates with the independent validator before
+# returning them, so a repair can never propose something that fails publish.
+# (The independence rule is one-way: the validator never imports the solver.)
+from .validator import validate as run_validate
 
 TIER_WEIGHT = {"must": 1000, "should": 40, "nice": 5}
 
@@ -462,7 +467,9 @@ def solve_repair(req: RepairRequest) -> RepairResponse:
                 jeop_by_date[d].add(a.personId)
                 d += timedelta(days=1)
 
-    for attempt in range(req.maxCandidates):
+    attempt = 0
+    while len(candidates) < req.maxCandidates and attempt < req.maxCandidates * 4:
+        attempt += 1
         m = cp_model.CpModel()
         y: dict[tuple[str, str], cp_model.IntVar] = {}
         for s in vacated:
@@ -474,6 +481,10 @@ def solve_repair(req: RepairRequest) -> RepairResponse:
                     continue
                 # not already on call that same night in base
                 if s.grain == "call-night" and d in base_call_dates.get(p.id, set()):
+                    continue
+                # never put a substitute on call the night before their clinic day
+                if s.grain == "call-night" and p.clinicDay and \
+                        weekday_code(d + timedelta(days=1)) == p.clinicDay:
                     continue
                 y[(s.id, p.id)] = m.NewBoolVar(f"y_{s.id}_{p.id}")
         # each vacated slot gets exactly one new person
@@ -556,6 +567,15 @@ def solve_repair(req: RepairRequest) -> RepairResponse:
                     id=f"a_{sid}_r", slotId=sid, personId=pid, status="draft",
                     provenance="repair", createdInVersion=(old.createdInVersion + 1))
 
+        # backstop: run the independent validator on the full candidate; never
+        # return one that would be refused at publish (block-severity violations).
+        vres = run_validate(ValidateRequest(
+            people=req.people, services=req.services, slots=req.slots,
+            rules=req.rules, assignments=new_assignments, absences=[absence]))
+        blocks = [v for v in vres.violations if v.severity == "block"]
+        if blocks:
+            continue  # discard; keep searching for a clean repair
+
         score = _disruption_score(changes, req, base_call_count, jeop_by_date, idx)
         expl = _repair_explanation(vacated, chosen, slot_by_id, idx, victim, jeop_by_date)
         candidates.append(RepairCandidate(
@@ -564,6 +584,7 @@ def solve_repair(req: RepairRequest) -> RepairResponse:
                             disruptionScore=score, violations=0),
             explanation=expl))
 
+    candidates.sort(key=lambda c: c.diff.disruptionScore)
     return RepairResponse(feasible=True, candidates=candidates, seed=req.seed, inputHash=in_hash)
 
 

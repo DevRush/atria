@@ -65,7 +65,11 @@ npm run dev         # http://localhost:3000
    a covered slot and it refuses — coverage gaps are unpublishable.)
 5. **On-Call** — the who's-on-call page now shows the substitute for Sat Sep 12. Static, no login,
    updated the instant the repair published.
-6. **Fairness** — call load is even to **±1** across the year; repair prefers whoever's below their
+6. **Requests** — a fellow submits time off (use "Fill a sample conflict" for a guaranteed one). It
+   lands in the queue tagged with its coverage impact ("affects call Oct 5"). The coordinator hits
+   **Review & approve** — the repair runs inline, they pick the least-disruptive option, and one click
+   approves the request *and* publishes the fix. A request with no coverage impact approves directly.
+7. **Fairness** — call load is even to **±1** across the year; repair prefers whoever's below their
    fair share. **Rules** — every rule is a plain-English, replay-checked, human-confirmed record.
 
 (Kiosk shortcuts for a hands-free walkthrough: `/?edit=demo` auto-applies a sample swap; `/?repair=auto`
