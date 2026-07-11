@@ -121,6 +121,7 @@ export function RepairFlow({
   async function publish() {
     if (!resp) return;
     const cand = resp.candidates[selected];
+    if (!cand) return;
     setPhase("publishing");
     setError(null);
     try {
@@ -201,7 +202,14 @@ export function RepairFlow({
         )}
 
         {/* Candidates */}
-        {resp && phase !== "idle" && (
+        {resp && phase !== "idle" && resp.candidates.length === 0 && (
+          <div className="rounded-r2 border border-border bg-surface-raised px-3 py-2.5 text-[12px] text-muted-foreground">
+            This shift is already covered — nothing to repair. If you just ran the demo, re-arm it with{" "}
+            <code className="rounded-r1 bg-surface px-1 py-0.5 font-mono text-[11px]">npm run demo:reset</code>.
+          </div>
+        )}
+
+        {resp && phase !== "idle" && resp.candidates.length > 0 && (
           <div className="space-y-2">
             <div className="flex items-center justify-between">
               <span className="text-[11px] font-medium uppercase tracking-wide text-faint-foreground">
