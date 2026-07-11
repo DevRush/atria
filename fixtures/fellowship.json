@@ -12200,8 +12200,8 @@
     {
       "id": "abs_7",
       "personId": "p_okafor",
-      "start": "2026-11-16",
-      "end": "2026-11-18",
+      "start": "2026-09-11",
+      "end": "2026-09-13",
       "type": "sick",
       "reasonCode": "OPAQUE-01",
       "status": "approved"

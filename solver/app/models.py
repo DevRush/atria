@@ -86,6 +86,7 @@ class SolveRequest(BaseModel):
     slots: list[Slot]
     rules: list[Rule] = []
     locks: list[Lock] = []
+    assignments: list[Assignment] = []  # existing assignments locks resolve against
     absences: list[Absence] = []
     seed: int = 4711
     timeBudgetSec: float = 60.0

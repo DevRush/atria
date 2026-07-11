@@ -232,6 +232,7 @@ export type SolveResponse = SolveResponseFeasible | SolveResponseInfeasible;
 export interface RepairEvent {
   kind: "absence";
   absenceId: string;
+  now?: string;
 }
 
 export interface RepairRequest extends SolveRequest {
@@ -243,6 +244,8 @@ export interface RepairRequest extends SolveRequest {
 
 export interface DiffChange {
   slotId: string;
+  serviceId: string;
+  date: string;
   from: string | null; // personId
   to: string | null; // personId
 }
@@ -251,6 +254,7 @@ export interface RepairCandidateDiff {
   changes: DiffChange[];
   peopleTouched: number;
   disruptionScore: number;
+  violations: number;
 }
 
 export interface RepairCandidate {
@@ -260,7 +264,11 @@ export interface RepairCandidate {
 }
 
 export interface RepairResponse {
+  feasible: boolean;
   candidates: RepairCandidate[];
+  seed?: number;
+  inputHash?: string;
+  conflicts?: Conflict[];
 }
 
 export interface ValidateRequest {

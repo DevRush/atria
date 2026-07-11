@@ -269,7 +269,7 @@ async function main() {
         source: r.source ?? null,
         text: r.text,
         confirmed: r.confirmed,
-        replay: r.replay ?? undefined,
+        replay: (r.replay ?? undefined) as object | undefined,
       },
     });
   }

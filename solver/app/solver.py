@@ -140,9 +140,14 @@ def build_generate(req: SolveRequest, idx: Index):
     # ---- user rules ----
     _apply_rules(m, x, idx, lit)
 
-    # ---- locks ----
+    # ---- locks (absolute — SPEC invariant 4): fix the locked (slot, person) ----
+    assign_by_id = {a.id: a for a in getattr(req, "assignments", [])}
     for lk in getattr(req, "locks", []):
-        pass  # locks resolved by caller via fixed assignments; handled in solve()
+        a = assign_by_id.get(lk.assignmentId)
+        if not a:
+            continue
+        if (a.slotId, a.personId) in x:
+            m.Add(x[(a.slotId, a.personId)] == 1).OnlyEnforceIf(lit("lock_" + a.slotId))
 
     # ---- objective: equity ----
     obj_terms = _equity_objective(m, x, idx, req.rules)
