@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "demo:reset": "tsx scripts/setup-v1.ts",
+    "demo:reset": "tsx prisma/seed.ts && tsx scripts/setup-v1.ts",
     "db:seed": "tsx prisma/seed.ts"
   },
   "dependencies": {

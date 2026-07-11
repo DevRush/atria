@@ -125,9 +125,9 @@ export function buildFairness(state: StateResponse, overrideAssignments?: Assign
   }
   const rows = state.people.map((p) => ({ person: p, ...counts.get(p.id)! }));
   const callVals = rows.map((r) => r.call);
-  const max = Math.max(...callVals, 1);
-  const min = Math.min(...callVals, 0);
-  return { rows, callSpread: max - min, max };
+  const maxVal = Math.max(...callVals);
+  const minVal = Math.min(...callVals);
+  return { rows, callSpread: maxVal - minVal, max: Math.max(maxVal, 1) };
 }
 
 /** Who is on call / jeopardy for a given date (the who's-on-call read path). */

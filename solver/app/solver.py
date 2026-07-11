@@ -137,6 +137,16 @@ def build_generate(req: SolveRequest, idx: Index):
     for (pid, _per), vs in by_person_period.items():
         m.Add(sum(vs) == 1).OnlyEnforceIf(lit("struct_one_block_per_period"))
 
+    # jeopardy tiers within one week must be distinct people (tier-1 != tier-2)
+    jeop_by_week: dict[tuple[str, str], list] = defaultdict(list)
+    for s in idx.jeop_slots:
+        for p in idx.eligible(s):
+            if (s.id, p.id) in x:
+                jeop_by_week[(s.start, p.id)].append(x[(s.id, p.id)])
+    for (_wk, _pid), vs in jeop_by_week.items():
+        if len(vs) > 1:
+            m.Add(sum(vs) <= 1).OnlyEnforceIf(lit("struct_distinct_jeopardy"))
+
     # ---- user rules ----
     _apply_rules(m, x, idx, lit)
 

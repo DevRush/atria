@@ -12172,6 +12172,12 @@
       "by": "chief_fellow",
       "reason": "Volunteered for Dec 25 call (holiday swap agreement, email 6/30)",
       "hard": true
+    },
+    {
+      "assignmentId": "a_seed_3",
+      "by": "chief",
+      "reason": "Fellow-arranged weekend call (covering a colleague earlier in the block)",
+      "hard": true
     }
   ],
   "assignments": [
@@ -12189,6 +12195,16 @@
       "id": "a_seed_2",
       "slotId": "slot_2026-12-25_call_1",
       "personId": "p_cohen",
+      "status": "draft",
+      "locked": true,
+      "provenance": "manual",
+      "createdInVersion": 1,
+      "supersededInVersion": null
+    },
+    {
+      "id": "a_seed_3",
+      "slotId": "slot_2026-09-12_call_1",
+      "personId": "p_okafor",
       "status": "draft",
       "locked": true,
       "provenance": "manual",

@@ -1,8 +1,6 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type {
-  Absence,
-  Person,
   RepairCandidate,
   RepairResponse,
   StateResponse,
@@ -74,6 +72,17 @@ export function RepairFlow({
   const [selected, setSelected] = useState(0);
   const [error, setError] = useState<string | null>(null);
   const [publishedVersion, setPublishedVersion] = useState<number | null>(null);
+
+  // Optional auto-run for kiosk/demo screenshots: /?repair=auto triggers the solve on load.
+  const autoRan = useRef(false);
+  useEffect(() => {
+    if (autoRan.current) return;
+    if (typeof window !== "undefined" && new URLSearchParams(window.location.search).get("repair") === "auto") {
+      autoRan.current = true;
+      void runRepair();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   if (!demoAbsence || !victim) return null;
 

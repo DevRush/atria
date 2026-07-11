@@ -20,10 +20,15 @@ async function main() {
     if (a) lockPins.push({ slotId: a.slotId, personId: a.personId, reason: l.reason, by: l.by });
   }
   console.log(`Locks to preserve: ${lockPins.map((p) => `${p.personId}@${p.slotId}`).join(", ") || "none"}`);
-  // pass resolved pins to the solver as assignments so it honors them
+  // Pass a SELF-CONSISTENT lock payload: the assignments and the locks that
+  // reference them share the same synthetic ids, so lock enforcement works on
+  // every run regardless of what the DB lock rows currently point at.
   const lockAssignments = lockPins.map((p, i) => ({
-    id: `a_seed_${i + 1}`, slotId: p.slotId, personId: p.personId,
+    id: `a_lock_${i + 1}`, slotId: p.slotId, personId: p.personId,
     status: "draft", locked: true, provenance: "manual", createdInVersion: 1, supersededInVersion: null,
+  }));
+  const lockPayload = lockPins.map((p, i) => ({
+    assignmentId: `a_lock_${i + 1}`, by: p.by, reason: p.reason, hard: true,
   }));
 
   const res = await solverPost<SolveResponse>("/solve", {
@@ -31,8 +36,8 @@ async function main() {
     services: state.services,
     slots: state.slots,
     rules: state.rules,
-    locks: state.locks,
-    assignments: lockAssignments, // so the solver honors the locks
+    locks: lockPayload,
+    assignments: lockAssignments, // ids match lockPayload so locks always enforce
     absences: [],
     seed: 4711,
     timeBudgetSec: 60,
