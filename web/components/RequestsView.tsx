@@ -3,6 +3,7 @@ import { useMemo, useState } from "react";
 import type { Absence, RepairResponse, StateResponse } from "@/lib/types";
 import { absenceImpact, findSampleConflict, initials } from "@/lib/view";
 import { DisruptionReceipt } from "./RepairFlow";
+import { SwapProposer } from "./SwapProposer";
 
 const TYPES = ["vacation", "sick", "conference", "parental", "leave"];
 const AY_MIN = "2026-07-01";
@@ -33,9 +34,11 @@ export function RequestsView({
 
       <NewRequestForm state={state} reload={reload} />
 
+      <SwapProposer state={state} reload={reload} />
+
       <section>
         <div className="mb-2 text-[11px] font-medium uppercase tracking-wide text-faint-foreground">
-          Pending · {pending.length}
+          Pending time off · {pending.length}
         </div>
         {pending.length === 0 ? (
           <div className="rounded-r2 border border-border bg-surface px-4 py-6 text-center text-[12.5px] text-muted-foreground">
