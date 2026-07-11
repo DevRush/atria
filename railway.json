@@ -1,0 +1,4 @@
+{
+  "$schema": "https://railway.com/railway.schema.json",
+  "note": "Atria deploys as TWO Railway services in one project: 'solver' (root=solver/, Dockerfile) and 'web' (root=web/, Dockerfile). Set web env SOLVER_URL to the solver service URL. See DEPLOY.md."
+}

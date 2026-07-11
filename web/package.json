@@ -7,8 +7,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "demo:reset": "tsx prisma/seed.ts && tsx scripts/setup-v1.ts",
-    "db:seed": "tsx prisma/seed.ts"
+    "demo:reset": "tsx prisma/seed.ts",
+    "db:seed": "tsx prisma/seed.ts",
+    "data:regen": "tsx prisma/seed-fixture.ts && tsx scripts/setup-v1.ts && tsx scripts/export-program.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.111.0",

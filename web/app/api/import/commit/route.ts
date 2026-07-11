@@ -31,10 +31,10 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Nothing to import." }, { status: 400 });
   }
 
-  // fixture supplies the AY calendar: block date ranges + call/jeopardy time slots
-  const fx = JSON.parse(
-    fs.readFileSync(path.resolve(process.cwd(), "../fixtures/fellowship.json"), "utf8")
-  );
+  // bundled program supplies the AY calendar: block date ranges + call/jeopardy slots
+  const bundled = path.join(process.cwd(), "data", "program.json");
+  const sibling = path.resolve(process.cwd(), "../fixtures/fellowship.json");
+  const fx = JSON.parse(fs.readFileSync(fs.existsSync(bundled) ? bundled : sibling, "utf8"));
   const fxBlocks: { index: number; start: string; end: string }[] = fx.blocks;
   const callSlots = fx.slots.filter((s: { grain: string }) => s.grain === "call-night");
   const jeopSlots = fx.slots.filter((s: { grain: string }) => s.grain === "week");
