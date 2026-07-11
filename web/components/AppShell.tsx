@@ -23,7 +23,7 @@ export function AppShell({
   children,
 }: {
   version: ScheduleVersion | null;
-  active: "schedule" | "requests" | "rules" | "fairness" | "oncall";
+  active: "schedule" | "requests" | "rules" | "fairness" | "oncall" | "import";
   children: React.ReactNode;
 }) {
   const nav = [
@@ -56,6 +56,14 @@ export function AppShell({
           ))}
         </nav>
         <div className="ml-auto flex items-center gap-3">
+          <Link
+            href="/import"
+            className={`text-[12px] transition-colors ${
+              active === "import" ? "font-medium text-foreground" : "text-muted-foreground hover:text-foreground"
+            }`}
+          >
+            Import
+          </Link>
           <span className="hidden text-[12px] text-muted-foreground sm:inline">
             Cardiology Fellowship · AY 2026–27
           </span>
