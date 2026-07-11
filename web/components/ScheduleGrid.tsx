@@ -1,21 +1,36 @@
 "use client";
 import type { Assignment, StateResponse } from "@/lib/types";
-import { buildGrid, FAMILY_CLASS, initials } from "@/lib/view";
+import { buildGrid, FAMILY_CLASS, GridCell, initials } from "@/lib/view";
 
 const LEVEL_LABEL: Record<string, string> = { F1: "PGY-4", F2: "PGY-5", F3: "PGY-6" };
 
 /** Fellows × 13 blocks. Text short-code is identity; hue is family reinforcement.
- * Changed cells (during a repair preview) are highlighted; locks show a left bar. */
+ * In editable mode, click a cell then a cell in the SAME block to swap the two
+ * fellows' rotations; drag also works. Edited cells are ringed and auto-locked. */
 export function ScheduleGrid({
   state,
   assignments,
   changedSlotIds,
+  editable = false,
+  selectedSlotId = null,
+  editedSlotIds,
+  onCellActivate,
+  onCellDrop,
 }: {
   state: StateResponse;
   assignments?: Assignment[];
   changedSlotIds?: Set<string>;
+  editable?: boolean;
+  selectedSlotId?: string | null;
+  editedSlotIds?: Set<string>;
+  onCellActivate?: (cell: GridCell) => void;
+  onCellDrop?: (sourceSlotId: string, targetSlotId: string) => void;
 }) {
   const { blocks, rows } = buildGrid(state, assignments);
+  const selectedBlock = selectedSlotId
+    ? rows.flatMap((r) => r.cells).find((c) => c.slotId === selectedSlotId)?.block.start
+    : null;
+
   return (
     <div className="overflow-x-auto rounded-r2 border border-border bg-surface">
       <table className="w-full border-collapse text-[12px]">
@@ -52,14 +67,42 @@ export function ScheduleGrid({
               </td>
               {cells.map((c) => {
                 const changed = c.slotId && changedSlotIds?.has(c.slotId);
+                const edited = c.slotId && editedSlotIds?.has(c.slotId);
+                const selected = c.slotId && c.slotId === selectedSlotId;
+                const isSwapTarget =
+                  editable && selectedSlotId && selectedBlock === c.block.start && c.slotId !== selectedSlotId && c.slotId;
                 return (
-                  <td key={c.block.start} className="border-l border-border px-1 py-0.5 text-center">
+                  <td
+                    key={c.block.start}
+                    className={`border-l border-border px-1 py-0.5 text-center ${
+                      isSwapTarget ? "bg-accent/[0.06]" : ""
+                    }`}
+                    onClick={editable && c.slotId ? () => onCellActivate?.(c) : undefined}
+                    onDragOver={editable ? (e) => e.preventDefault() : undefined}
+                    onDrop={
+                      editable && c.slotId
+                        ? (e) => {
+                            e.preventDefault();
+                            const src = e.dataTransfer.getData("text/slot");
+                            if (src && src !== c.slotId) onCellDrop?.(src, c.slotId!);
+                          }
+                        : undefined
+                    }
+                  >
                     {c.code && c.family ? (
                       <span
-                        title={`${c.serviceId}${c.locked ? " · locked" : ""}`}
+                        draggable={editable && !!c.slotId}
+                        onDragStart={
+                          editable && c.slotId
+                            ? (e) => e.dataTransfer.setData("text/slot", c.slotId!)
+                            : undefined
+                        }
+                        title={`${c.serviceId}${c.locked ? " · locked" : ""}${editable ? " · click to swap" : ""}`}
                         className={`inline-flex h-[19px] min-w-[42px] items-center justify-center rounded-r1 border px-1 font-mono text-[10.5px] font-medium tracking-wide ${FAMILY_CLASS[c.family]} ${
                           c.locked ? "border-l-[3px]" : ""
-                        } ${changed ? "ring-2 ring-accent ring-offset-1 ring-offset-surface" : ""}`}
+                        } ${editable ? "cursor-pointer" : ""} ${
+                          selected ? "ring-2 ring-accent ring-offset-1 ring-offset-surface" : ""
+                        } ${changed || edited ? "ring-2 ring-accent ring-offset-1 ring-offset-surface" : ""}`}
                       >
                         {c.code}
                       </span>

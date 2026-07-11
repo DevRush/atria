@@ -103,6 +103,17 @@ def validate(req: ValidateRequest) -> ValidateResponse:
         v = _check_rule(r, req, held, slots, services, people, call_nights)
         violations.extend(v)
 
+    # ---- eligibility: every assignee must be qualified for the service ----
+    for a in live:
+        s = slots.get(a.slotId)
+        p = people.get(a.personId)
+        if s and p and s.serviceId not in p.eligibleServices:
+            svc = services.get(s.serviceId)
+            violations.append(Violation(ruleId=None, severity="block",
+                text=f"{p.name} is not eligible for {svc.name if svc else s.serviceId} "
+                     f"({s.start[:10]}).",
+                slotIds=[s.id], personIds=[p.id]))
+
     # ---- coverage: every non-research required slot is filled ----
     filled = {a.slotId for a in live}
     for s in req.slots:
@@ -158,14 +169,17 @@ def _check_rule(r, req, held, slots, services, people, call_nights) -> list[Viol
     out = []
     t = r.type
     if t == "block_requirement":
+        # Graduation progress (COCATS) — a year-end goal, not a hard current violation.
+        # Surfaced as a WARNING so a mid-year edit that dips below is visible but still
+        # publishable (the year has more blocks to make it up).
         svc = r.params.get("serviceId"); mn = int(r.params.get("minBlocks", 0))
         for pid, p in people.items():
             if not scope_matches(r.scope, p):
                 continue
             cnt = sum(1 for s in held.get(pid, []) if s.serviceId == svc and s.grain == "block")
             if cnt < mn:
-                out.append(Violation(ruleId=r.id, severity=("block" if r.level != "soft" else "warn"),
-                    text=f"{_name(people,pid)} has {cnt} of {mn} required {svc} blocks.",
+                out.append(Violation(ruleId=r.id, severity="warn",
+                    text=f"{_name(people,pid)} is on track for {cnt} of {mn} required {svc} blocks.",
                     personIds=[pid]))
     elif t == "min_coverage":
         pass  # covered by the coverage sweep above
