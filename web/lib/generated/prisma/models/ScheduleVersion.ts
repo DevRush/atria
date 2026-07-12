@@ -66,6 +66,7 @@ export type ScheduleVersionCountAggregateOutputType = {
   inputHash: number
   seed: number
   override: number
+  validation: number
   _all: number
 }
 
@@ -110,6 +111,7 @@ export type ScheduleVersionCountAggregateInputType = {
   inputHash?: true
   seed?: true
   override?: true
+  validation?: true
   _all?: true
 }
 
@@ -209,6 +211,7 @@ export type ScheduleVersionGroupByOutputType = {
   inputHash: string | null
   seed: number | null
   override: runtime.JsonValue | null
+  validation: runtime.JsonValue | null
   _count: ScheduleVersionCountAggregateOutputType | null
   _avg: ScheduleVersionAvgAggregateOutputType | null
   _sum: ScheduleVersionSumAggregateOutputType | null
@@ -244,6 +247,7 @@ export type ScheduleVersionWhereInput = {
   inputHash?: Prisma.StringNullableFilter<"ScheduleVersion"> | string | null
   seed?: Prisma.IntNullableFilter<"ScheduleVersion"> | number | null
   override?: Prisma.JsonNullableFilter<"ScheduleVersion">
+  validation?: Prisma.JsonNullableFilter<"ScheduleVersion">
 }
 
 export type ScheduleVersionOrderByWithRelationInput = {
@@ -256,6 +260,7 @@ export type ScheduleVersionOrderByWithRelationInput = {
   inputHash?: Prisma.SortOrderInput | Prisma.SortOrder
   seed?: Prisma.SortOrderInput | Prisma.SortOrder
   override?: Prisma.SortOrderInput | Prisma.SortOrder
+  validation?: Prisma.SortOrderInput | Prisma.SortOrder
 }
 
 export type ScheduleVersionWhereUniqueInput = Prisma.AtLeast<{
@@ -271,6 +276,7 @@ export type ScheduleVersionWhereUniqueInput = Prisma.AtLeast<{
   inputHash?: Prisma.StringNullableFilter<"ScheduleVersion"> | string | null
   seed?: Prisma.IntNullableFilter<"ScheduleVersion"> | number | null
   override?: Prisma.JsonNullableFilter<"ScheduleVersion">
+  validation?: Prisma.JsonNullableFilter<"ScheduleVersion">
 }, "version">
 
 export type ScheduleVersionOrderByWithAggregationInput = {
@@ -283,6 +289,7 @@ export type ScheduleVersionOrderByWithAggregationInput = {
   inputHash?: Prisma.SortOrderInput | Prisma.SortOrder
   seed?: Prisma.SortOrderInput | Prisma.SortOrder
   override?: Prisma.SortOrderInput | Prisma.SortOrder
+  validation?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.ScheduleVersionCountOrderByAggregateInput
   _avg?: Prisma.ScheduleVersionAvgOrderByAggregateInput
   _max?: Prisma.ScheduleVersionMaxOrderByAggregateInput
@@ -303,6 +310,7 @@ export type ScheduleVersionScalarWhereWithAggregatesInput = {
   inputHash?: Prisma.StringNullableWithAggregatesFilter<"ScheduleVersion"> | string | null
   seed?: Prisma.IntNullableWithAggregatesFilter<"ScheduleVersion"> | number | null
   override?: Prisma.JsonNullableWithAggregatesFilter<"ScheduleVersion">
+  validation?: Prisma.JsonNullableWithAggregatesFilter<"ScheduleVersion">
 }
 
 export type ScheduleVersionCreateInput = {
@@ -315,6 +323,7 @@ export type ScheduleVersionCreateInput = {
   inputHash?: string | null
   seed?: number | null
   override?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  validation?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
 }
 
 export type ScheduleVersionUncheckedCreateInput = {
@@ -327,6 +336,7 @@ export type ScheduleVersionUncheckedCreateInput = {
   inputHash?: string | null
   seed?: number | null
   override?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  validation?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
 }
 
 export type ScheduleVersionUpdateInput = {
@@ -339,6 +349,7 @@ export type ScheduleVersionUpdateInput = {
   inputHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   seed?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   override?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  validation?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
 }
 
 export type ScheduleVersionUncheckedUpdateInput = {
@@ -351,6 +362,7 @@ export type ScheduleVersionUncheckedUpdateInput = {
   inputHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   seed?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   override?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  validation?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
 }
 
 export type ScheduleVersionCreateManyInput = {
@@ -363,6 +375,7 @@ export type ScheduleVersionCreateManyInput = {
   inputHash?: string | null
   seed?: number | null
   override?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  validation?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
 }
 
 export type ScheduleVersionUpdateManyMutationInput = {
@@ -375,6 +388,7 @@ export type ScheduleVersionUpdateManyMutationInput = {
   inputHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   seed?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   override?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  validation?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
 }
 
 export type ScheduleVersionUncheckedUpdateManyInput = {
@@ -387,6 +401,7 @@ export type ScheduleVersionUncheckedUpdateManyInput = {
   inputHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   seed?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   override?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  validation?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
 }
 
 export type ScheduleVersionCountOrderByAggregateInput = {
@@ -399,6 +414,7 @@ export type ScheduleVersionCountOrderByAggregateInput = {
   inputHash?: Prisma.SortOrder
   seed?: Prisma.SortOrder
   override?: Prisma.SortOrder
+  validation?: Prisma.SortOrder
 }
 
 export type ScheduleVersionAvgOrderByAggregateInput = {
@@ -443,6 +459,7 @@ export type ScheduleVersionSelect<ExtArgs extends runtime.Types.Extensions.Inter
   inputHash?: boolean
   seed?: boolean
   override?: boolean
+  validation?: boolean
 }, ExtArgs["result"]["scheduleVersion"]>
 
 export type ScheduleVersionSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -455,6 +472,7 @@ export type ScheduleVersionSelectCreateManyAndReturn<ExtArgs extends runtime.Typ
   inputHash?: boolean
   seed?: boolean
   override?: boolean
+  validation?: boolean
 }, ExtArgs["result"]["scheduleVersion"]>
 
 export type ScheduleVersionSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -467,6 +485,7 @@ export type ScheduleVersionSelectUpdateManyAndReturn<ExtArgs extends runtime.Typ
   inputHash?: boolean
   seed?: boolean
   override?: boolean
+  validation?: boolean
 }, ExtArgs["result"]["scheduleVersion"]>
 
 export type ScheduleVersionSelectScalar = {
@@ -479,9 +498,10 @@ export type ScheduleVersionSelectScalar = {
   inputHash?: boolean
   seed?: boolean
   override?: boolean
+  validation?: boolean
 }
 
-export type ScheduleVersionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"version" | "publishedAt" | "publishedBy" | "parent" | "cause" | "diff" | "inputHash" | "seed" | "override", ExtArgs["result"]["scheduleVersion"]>
+export type ScheduleVersionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"version" | "publishedAt" | "publishedBy" | "parent" | "cause" | "diff" | "inputHash" | "seed" | "override" | "validation", ExtArgs["result"]["scheduleVersion"]>
 
 export type $ScheduleVersionPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "ScheduleVersion"
@@ -496,6 +516,7 @@ export type $ScheduleVersionPayload<ExtArgs extends runtime.Types.Extensions.Int
     inputHash: string | null
     seed: number | null
     override: runtime.JsonValue | null
+    validation: runtime.JsonValue | null
   }, ExtArgs["result"]["scheduleVersion"]>
   composites: {}
 }
@@ -928,6 +949,7 @@ export interface ScheduleVersionFieldRefs {
   readonly inputHash: Prisma.FieldRef<"ScheduleVersion", 'String'>
   readonly seed: Prisma.FieldRef<"ScheduleVersion", 'Int'>
   readonly override: Prisma.FieldRef<"ScheduleVersion", 'Json'>
+  readonly validation: Prisma.FieldRef<"ScheduleVersion", 'Json'>
 }
     
 

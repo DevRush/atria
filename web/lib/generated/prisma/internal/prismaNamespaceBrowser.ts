@@ -58,7 +58,9 @@ export const ModelName = {
   Absence: 'Absence',
   Rule: 'Rule',
   Lock: 'Lock',
-  ScheduleVersion: 'ScheduleVersion'
+  ScheduleVersion: 'ScheduleVersion',
+  ScheduleEvent: 'ScheduleEvent',
+  ShareToken: 'ShareToken'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -172,10 +174,34 @@ export const ScheduleVersionScalarFieldEnum = {
   diff: 'diff',
   inputHash: 'inputHash',
   seed: 'seed',
-  override: 'override'
+  override: 'override',
+  validation: 'validation'
 } as const
 
 export type ScheduleVersionScalarFieldEnum = (typeof ScheduleVersionScalarFieldEnum)[keyof typeof ScheduleVersionScalarFieldEnum]
+
+
+export const ScheduleEventScalarFieldEnum = {
+  id: 'id',
+  actor: 'actor',
+  eventType: 'eventType',
+  detail: 'detail',
+  createdAt: 'createdAt'
+} as const
+
+export type ScheduleEventScalarFieldEnum = (typeof ScheduleEventScalarFieldEnum)[keyof typeof ScheduleEventScalarFieldEnum]
+
+
+export const ShareTokenScalarFieldEnum = {
+  id: 'id',
+  secretHash: 'secretHash',
+  label: 'label',
+  createdAt: 'createdAt',
+  expiresAt: 'expiresAt',
+  revokedAt: 'revokedAt'
+} as const
+
+export type ShareTokenScalarFieldEnum = (typeof ShareTokenScalarFieldEnum)[keyof typeof ShareTokenScalarFieldEnum]
 
 
 export const SortOrder = {

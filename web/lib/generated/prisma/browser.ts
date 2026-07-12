@@ -57,3 +57,13 @@ export type Lock = Prisma.LockModel
  * 
  */
 export type ScheduleVersion = Prisma.ScheduleVersionModel
+/**
+ * Model ScheduleEvent
+ * 
+ */
+export type ScheduleEvent = Prisma.ScheduleEventModel
+/**
+ * Model ShareToken
+ * 
+ */
+export type ShareToken = Prisma.ShareTokenModel

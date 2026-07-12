@@ -181,6 +181,21 @@ export async function POST(req: Request) {
         inputHash: body.inputHash ?? null,
         seed: body.seed ?? null,
         override: overrideValid && blocking.length > 0 ? { by: override!.by, reason: override!.reason } : undefined,
+        // Validation receipt — the independent validator's verdict, stored as
+        // durable evidence for this version (Codex-adapted).
+        validation: {
+          ok: blocking.length === 0,
+          blockCount: blocking.length,
+          warnCount: violations.filter((v) => v.severity === "warn").length,
+        },
+      },
+    });
+    await tx.scheduleEvent.create({
+      data: {
+        actor: body.publishedBy,
+        eventType: "publish",
+        detail: { version: nextVersion, cause: body.cause ?? { kind: "amendment" }, diff } as object,
+        createdAt: publishedAt,
       },
     });
   });

@@ -116,4 +116,31 @@ model ScheduleVersion {
   // Typed override waiver, present only when blocking violations were overridden
   // at publish (CLAUDE.md invariant 1). null on clean publishes.
   override    Json? // { by, reason }
+  // Validation receipt: the independent validator's verdict at publish time,
+  // stored as durable evidence (adapted from Codex's Atria).
+  validation  Json? // { ok, blockCount, warnCount }
+}
+
+// Append-only audit log of consequential actions (publish, share, reset, …).
+model ScheduleEvent {
+  id        String @id @default(cuid())
+  actor     String
+  eventType String // publish | share.create | share.rotate | share.revoke | reset | import
+  detail    Json?
+  createdAt String // ISO-8601 datetime
+
+  @@index([createdAt])
+}
+
+// Revocable, hashed bearer link to the current published who's-on-call projection.
+// The 256-bit secret is shown once at creation; only its SHA-256 hash is stored.
+model ShareToken {
+  id         String  @id @default(cuid())
+  secretHash String  @unique
+  label      String  @default("Who's-on-call")
+  createdAt  String // ISO-8601 datetime
+  expiresAt  String? // ISO-8601 datetime, optional
+  revokedAt  String? // ISO-8601 datetime, set on revoke/rotate
+
+  @@index([revokedAt])
 }

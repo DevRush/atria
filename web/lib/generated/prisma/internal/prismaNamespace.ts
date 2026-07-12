@@ -391,7 +391,9 @@ export const ModelName = {
   Absence: 'Absence',
   Rule: 'Rule',
   Lock: 'Lock',
-  ScheduleVersion: 'ScheduleVersion'
+  ScheduleVersion: 'ScheduleVersion',
+  ScheduleEvent: 'ScheduleEvent',
+  ShareToken: 'ShareToken'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -407,7 +409,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "person" | "service" | "slot" | "assignment" | "absence" | "rule" | "lock" | "scheduleVersion"
+    modelProps: "person" | "service" | "slot" | "assignment" | "absence" | "rule" | "lock" | "scheduleVersion" | "scheduleEvent" | "shareToken"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1003,6 +1005,154 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    ScheduleEvent: {
+      payload: Prisma.$ScheduleEventPayload<ExtArgs>
+      fields: Prisma.ScheduleEventFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ScheduleEventFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ScheduleEventPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ScheduleEventFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ScheduleEventPayload>
+        }
+        findFirst: {
+          args: Prisma.ScheduleEventFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ScheduleEventPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ScheduleEventFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ScheduleEventPayload>
+        }
+        findMany: {
+          args: Prisma.ScheduleEventFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ScheduleEventPayload>[]
+        }
+        create: {
+          args: Prisma.ScheduleEventCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ScheduleEventPayload>
+        }
+        createMany: {
+          args: Prisma.ScheduleEventCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ScheduleEventCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ScheduleEventPayload>[]
+        }
+        delete: {
+          args: Prisma.ScheduleEventDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ScheduleEventPayload>
+        }
+        update: {
+          args: Prisma.ScheduleEventUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ScheduleEventPayload>
+        }
+        deleteMany: {
+          args: Prisma.ScheduleEventDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ScheduleEventUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ScheduleEventUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ScheduleEventPayload>[]
+        }
+        upsert: {
+          args: Prisma.ScheduleEventUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ScheduleEventPayload>
+        }
+        aggregate: {
+          args: Prisma.ScheduleEventAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateScheduleEvent>
+        }
+        groupBy: {
+          args: Prisma.ScheduleEventGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ScheduleEventGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ScheduleEventCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ScheduleEventCountAggregateOutputType> | number
+        }
+      }
+    }
+    ShareToken: {
+      payload: Prisma.$ShareTokenPayload<ExtArgs>
+      fields: Prisma.ShareTokenFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ShareTokenFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ShareTokenPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ShareTokenFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ShareTokenPayload>
+        }
+        findFirst: {
+          args: Prisma.ShareTokenFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ShareTokenPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ShareTokenFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ShareTokenPayload>
+        }
+        findMany: {
+          args: Prisma.ShareTokenFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ShareTokenPayload>[]
+        }
+        create: {
+          args: Prisma.ShareTokenCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ShareTokenPayload>
+        }
+        createMany: {
+          args: Prisma.ShareTokenCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ShareTokenCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ShareTokenPayload>[]
+        }
+        delete: {
+          args: Prisma.ShareTokenDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ShareTokenPayload>
+        }
+        update: {
+          args: Prisma.ShareTokenUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ShareTokenPayload>
+        }
+        deleteMany: {
+          args: Prisma.ShareTokenDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ShareTokenUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ShareTokenUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ShareTokenPayload>[]
+        }
+        upsert: {
+          args: Prisma.ShareTokenUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ShareTokenPayload>
+        }
+        aggregate: {
+          args: Prisma.ShareTokenAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateShareToken>
+        }
+        groupBy: {
+          args: Prisma.ShareTokenGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ShareTokenGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ShareTokenCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ShareTokenCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -1137,10 +1287,34 @@ export const ScheduleVersionScalarFieldEnum = {
   diff: 'diff',
   inputHash: 'inputHash',
   seed: 'seed',
-  override: 'override'
+  override: 'override',
+  validation: 'validation'
 } as const
 
 export type ScheduleVersionScalarFieldEnum = (typeof ScheduleVersionScalarFieldEnum)[keyof typeof ScheduleVersionScalarFieldEnum]
+
+
+export const ScheduleEventScalarFieldEnum = {
+  id: 'id',
+  actor: 'actor',
+  eventType: 'eventType',
+  detail: 'detail',
+  createdAt: 'createdAt'
+} as const
+
+export type ScheduleEventScalarFieldEnum = (typeof ScheduleEventScalarFieldEnum)[keyof typeof ScheduleEventScalarFieldEnum]
+
+
+export const ShareTokenScalarFieldEnum = {
+  id: 'id',
+  secretHash: 'secretHash',
+  label: 'label',
+  createdAt: 'createdAt',
+  expiresAt: 'expiresAt',
+  revokedAt: 'revokedAt'
+} as const
+
+export type ShareTokenScalarFieldEnum = (typeof ShareTokenScalarFieldEnum)[keyof typeof ShareTokenScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -1356,6 +1530,8 @@ export type GlobalOmitConfig = {
   rule?: Prisma.RuleOmit
   lock?: Prisma.LockOmit
   scheduleVersion?: Prisma.ScheduleVersionOmit
+  scheduleEvent?: Prisma.ScheduleEventOmit
+  shareToken?: Prisma.ShareTokenOmit
 }
 
 /* Types for Logging */

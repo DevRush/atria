@@ -1,4 +1,5 @@
 import { AppShell } from "@/components/AppShell";
+import { ShareLinkManager } from "@/components/ShareLinkManager";
 import { getState } from "@/lib/state";
 import { initials, onCallFor } from "@/lib/view";
 
@@ -35,9 +36,13 @@ export default async function OnCallPage({
             year: "numeric",
           })}
         </h1>
-        <p className="mb-5 text-[12px] text-muted-foreground">
+        <p className="mb-4 text-[12px] text-muted-foreground">
           Cardiology fellowship · in-house call &amp; backup · updates the instant a repair publishes.
         </p>
+
+        <div className="mb-5">
+          <ShareLinkManager />
+        </div>
 
         <div className="space-y-2">
           {roster.length === 0 && (
