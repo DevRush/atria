@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { csvCell, toCsv, toIcs } from "../lib/export";
+import { csvCell, icsFromProjection, toCsv, toIcs } from "../lib/export";
+import { buildPublicProjection } from "../lib/projection";
 import type { StateResponse } from "../lib/types";
 
 function fixture(): StateResponse {
@@ -62,4 +63,12 @@ test("toIcs produces a valid calendar with one VEVENT per assignment", () => {
 test("toIcs can filter to one person", () => {
   const ics = toIcs(fixture(), { personId: "p_none" });
   assert.equal((ics.match(/BEGIN:VEVENT/g) ?? []).length, 0);
+});
+
+test("icsFromProjection builds a privacy-safe feed (abbreviated, no credentials)", () => {
+  const ics = icsFromProjection(buildPublicProjection(fixture()));
+  assert.ok(ics.startsWith("BEGIN:VCALENDAR"));
+  assert.ok(ics.includes("SUMMARY:On-call: A. Alvarez"), "abbreviated name in feed");
+  assert.ok(!ics.includes("MD"), "no credentials leak into the feed");
+  assert.ok(!ics.includes("p_a"), "no internal ids leak into the feed");
 });

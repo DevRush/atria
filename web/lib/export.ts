@@ -8,6 +8,7 @@
  * treat it as text, never execute it). Adapted from Codex's import template guard.
  */
 import type { StateResponse } from "@/lib/types";
+import type { PublicProjection } from "@/lib/projection";
 
 export function csvCell(v: string | number | null | undefined): string {
   let s = v == null ? "" : String(v);
@@ -109,6 +110,46 @@ export function toIcs(state: StateResponse, opts?: { personId?: string }): strin
     out.push(
       `SUMMARY:${icsEscape(summary)}`,
       `DESCRIPTION:${icsEscape(`${code} · ${p?.level ?? ""} · Atria v${v}`)}`,
+      "END:VEVENT"
+    );
+  }
+  out.push("END:VCALENDAR");
+  return out.join("\r\n");
+}
+
+/** Build a privacy-safe on-call calendar feed from the PUBLIC projection
+ * (abbreviated names, allowlisted fields only) — the payload behind a revocable
+ * share token, so residents can subscribe without exposing a full roster. */
+export function icsFromProjection(p: PublicProjection): string {
+  const stamp = icsDateTime(p.publishedAt ?? "1970-01-01T00:00:00Z");
+  const uidSafe = (s: string) => s.replace(/[^A-Za-z0-9]/g, "");
+  const out: string[] = [
+    "BEGIN:VCALENDAR",
+    "VERSION:2.0",
+    "PRODID:-//Atria//OnCall//EN",
+    "CALSCALE:GREGORIAN",
+    "METHOD:PUBLISH",
+    `X-WR-CALNAME:${icsEscape(p.scheduleTitle || "On-call")}`,
+  ];
+  for (const c of p.call) {
+    out.push(
+      "BEGIN:VEVENT",
+      `UID:call-${c.date}-${uidSafe(c.person)}.v${p.version ?? 1}@atria`,
+      `DTSTAMP:${stamp}`,
+      `DTSTART;VALUE=DATE:${icsDate(c.date)}`,
+      `DTEND;VALUE=DATE:${icsDate(addDay(c.date))}`,
+      `SUMMARY:${icsEscape("On-call: " + c.person)}`,
+      "END:VEVENT"
+    );
+  }
+  for (const j of p.jeopardy) {
+    out.push(
+      "BEGIN:VEVENT",
+      `UID:jeop-${j.start}-${uidSafe(j.person)}.v${p.version ?? 1}@atria`,
+      `DTSTAMP:${stamp}`,
+      `DTSTART;VALUE=DATE:${icsDate(j.start)}`,
+      `DTEND;VALUE=DATE:${icsDate(addDay(j.end))}`,
+      `SUMMARY:${icsEscape("Jeopardy: " + j.person)}`,
       "END:VEVENT"
     );
   }

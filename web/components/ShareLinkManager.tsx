@@ -101,6 +101,15 @@ export function ShareLinkManager() {
               {copied ? "Copied" : "Copy"}
             </button>
           </div>
+          <div className="mt-1.5 flex items-center gap-2">
+            <span className="shrink-0 text-[10px] font-medium uppercase tracking-wide text-faint-foreground">Calendar feed</span>
+            <code className="min-w-0 flex-1 truncate rounded bg-surface px-2 py-0.5 font-mono text-[10.5px] text-muted-foreground">
+              {freshLink.replace("/p/", "/api/feed/")}
+            </code>
+          </div>
+          <div className="mt-1 text-[10px] text-faint-foreground">
+            Subscribe in any calendar app · revoking this link stops the feed too.
+          </div>
         </div>
       )}
     </div>
