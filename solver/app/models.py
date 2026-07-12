@@ -180,3 +180,4 @@ class Violation(BaseModel):
 class ValidateResponse(BaseModel):
     ok: bool
     violations: list[Violation] = []
+    validatorVersion: str = "atria-validator-1"  # provenance: which validator produced this verdict

@@ -301,6 +301,8 @@ export interface Violation {
 export interface ValidateResponse {
   ok: boolean;
   violations: Violation[];
+  /** Provenance: which validator produced this verdict. */
+  validatorVersion?: string;
 }
 
 // ---------------------------------------------------------------------------

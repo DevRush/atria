@@ -187,6 +187,8 @@ export async function POST(req: Request) {
           ok: blocking.length === 0,
           blockCount: blocking.length,
           warnCount: violations.filter((v) => v.severity === "warn").length,
+          validatorVersion: validation.validatorVersion ?? "unknown",
+          validatedAt: publishedAt,
         },
       },
     });

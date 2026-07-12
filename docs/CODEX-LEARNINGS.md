@@ -55,20 +55,28 @@ judged-demo features, then robustness.
 
 ### Tier 1 — correctness & honesty (a claim the product doesn't currently keep)
 
-- 🔨 **HIGH · Holiday equity is a silent no-op.** We ship a `holiday_equity`
-  rule, a holiday fairness column, and an objective whose docstring says it
-  spreads holiday call — but the solver runs `holiday_dates = set()` (empty),
-  the request schema has no `holidays` field, the validator has no holiday
-  check, and the fairness ledger hardcodes `new Set()`. The holiday data even
-  sits unused in the program bundle. **Fix:** thread program holidays end-to-end
-  → real holiday-spread objective term, real fairness counts, validator awareness.
-  *(Codex `CoverageSlot.holiday` + `holidaySpread`; readers A#28/#63, code#1.)*
-- 📋 **LOW · Validator provenance stamp.** Persist `validatorVersion` +
-  `validatedAt` on the stored validation receipt so it's independently auditable
-  ("which validator, when"). *(code#8.)*
-- 📋 **MED · Honest sample-data labeling.** Explicitly mark the seeded demo
-  program as illustrative sample data everywhere it reads as a roster; never let
-  a demo be mistaken for a live schedule. *(reader A#59.)*
+- ✅ **HIGH · Holiday equity was a silent no-op — FIXED & DEPLOYED (2026-07-12).**
+  We shipped a `holiday_equity` rule, a holiday fairness column, and an objective
+  whose docstring claimed to spread holiday call — but the solver ran
+  `holiday_dates = set()` (empty), the request schema had no `holidays` field,
+  the validator had no holiday check, and the fairness ledger hardcoded
+  `new Set()`, while the holiday data sat unused in the bundle. Now threaded
+  end-to-end: `Holiday` model → `getState` → request builders → solver
+  `_equity_objective` holiday-spread term → Fairness page **Holiday** column, with
+  a regression test asserting `holiday_dates` is populated. *(readers A#28/#63,
+  code#1.)*
+- ✅ **LOW · Validator provenance stamp — DONE.** The validator now reports
+  `validatorVersion`; publish persists it plus `validatedAt` on the stored
+  validation receipt so the verdict is independently auditable ("which validator,
+  when"). *(code#8.)*
+- ◐ **MED · Honest sample-data labeling — public surface already covered; in-app
+  chip deferred.** The public share page already carries version, publish
+  timestamp, "a printed copy may be out of date — always check the live link,"
+  and the content hash — and it must NOT hardcode "sample," since a real program
+  can share the same surface. The remaining piece is an *in-app* "sample data"
+  chip, which needs a correct seed-vs-import marker (set at seed, cleared on
+  import) rather than a fragile roster-id heuristic. Tracked as its own change.
+  *(reader A#59.)*
 
 ### Tier 2 — tamper-evidence & separation of duties
 
