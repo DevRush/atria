@@ -102,12 +102,12 @@ judged-demo features, then robustness.
   Pure client compute (`lib/inspect.ts`), edition-aware wording, 4 unit tests.
   Verified: attending EP shows 12 ruled out for lacking privileges. *(readers
   A#19/#48.)*
-- ◐ **MED · Export + calendar suite — CSV + ICS DONE & DEPLOYED (2026-07-12).**
-  Header Export menu → CSV (formula-injection-neutralized, RFC-4180) and ICS
-  (RFC-5545, timed call nights + all-day rotations, per-person filter). Remaining:
-  a version-stamped **grayscale print view** (browser print-to-PDF, no PDF lib)
-  and a *revocable-token* ICS feed (today it's an authenticated download).
-  *(readers A#60/#76, code#4.)*
+- ✅ **MED · Export + calendar suite — DONE & DEPLOYED (2026-07-12).** Header
+  Export menu → CSV (formula-injection-neutralized, RFC-4180), ICS download
+  (RFC-5545, per-person filter), and grayscale print view. Plus a **revocable,
+  privacy-safe ICS feed** at `/api/feed/[token]` — subscribable, built from the
+  hash-verified public projection (abbreviated, allowlisted), killed when the
+  share link is revoked. *(readers A#60/#76, code#4.)*
 
 ### Tier 4 — robustness
 
