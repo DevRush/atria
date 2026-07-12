@@ -60,7 +60,12 @@ export function SwapProposer({ state, reload }: { state: StateResponse; reload: 
           rules: state.rules, assignments: swapped, absences: [],
         }),
       });
-      setValidation((await r.json()) as ValidateResponse);
+      const data = await r.json();
+      if (r.ok && Array.isArray(data?.violations)) setValidation(data as ValidateResponse);
+      else {
+        setValidation(null);
+        setError(data?.error ?? "Couldn't check the trade — try again.");
+      }
     } catch (e) {
       setError(String(e instanceof Error ? e.message : e));
     } finally {

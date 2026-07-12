@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { ScheduleVersion } from "@/lib/types";
+import { ResetButton } from "./ResetButton";
 
 export function VersionBadge({ version }: { version: ScheduleVersion | null }) {
   if (!version)
@@ -64,6 +65,7 @@ export function AppShell({
           >
             Import
           </Link>
+          <ResetButton />
           <span className="hidden text-[12px] text-muted-foreground sm:inline">
             Cardiology Fellowship · AY 2026–27
           </span>

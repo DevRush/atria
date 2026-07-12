@@ -8,12 +8,18 @@ export default function RequestsPage() {
   const [state, setState] = useState<StateResponse | null>(null);
   const [err, setErr] = useState<string | null>(null);
 
-  async function load() {
-    try {
-      const r = await fetch("/api/state", { cache: "no-store" });
-      setState(await r.json());
-    } catch (e) {
-      setErr(String(e));
+  async function load(retries = 4) {
+    setErr(null);
+    for (let i = 0; i <= retries; i++) {
+      try {
+        const r = await fetch("/api/state", { cache: "no-store" });
+        if (!r.ok) throw new Error(`HTTP ${r.status}`);
+        setState(await r.json());
+        return;
+      } catch (e) {
+        if (i === retries) setErr(String(e instanceof Error ? e.message : e));
+        else await new Promise((res) => setTimeout(res, 1200));
+      }
     }
   }
   useEffect(() => {
@@ -23,7 +29,12 @@ export default function RequestsPage() {
   if (err)
     return (
       <div className="grid min-h-[60vh] place-items-center text-[13px] text-muted-foreground">
-        Failed to load: {err}
+        <div className="text-center">
+          <div className="mb-2">Couldn&apos;t reach the server.</div>
+          <button onClick={() => load()} className="rounded-r1 bg-accent px-3 py-1.5 text-[12px] font-medium text-white">
+            Retry
+          </button>
+        </div>
       </div>
     );
   if (!state)

@@ -84,7 +84,10 @@ export function EditableSchedule({
             absences: [],
           }),
         });
-        setValidation((await r.json()) as ValidateResponse);
+        const data = await r.json();
+        // only accept a well-formed validator response; a rate-limit/error body
+        // has no `violations` array and must not reach the render path
+        setValidation(r.ok && Array.isArray(data?.violations) ? (data as ValidateResponse) : null);
       } catch {
         setValidation(null);
       } finally {
