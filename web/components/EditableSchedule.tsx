@@ -3,6 +3,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import type { Assignment, StateResponse, ValidateResponse } from "@/lib/types";
 import { GridCell } from "@/lib/view";
 import { GridLegend, ScheduleGrid } from "./ScheduleGrid";
+import { AssignmentInspector } from "./AssignmentInspector";
 
 type Snapshot = { assignments: Assignment[]; edited: string[] };
 
@@ -22,6 +23,8 @@ export function EditableSchedule({
   const [history, setHistory] = useState<Snapshot[]>([]);
   const [validation, setValidation] = useState<ValidateResponse | null>(null);
   const [validating, setValidating] = useState(false);
+  const [mode, setMode] = useState<"edit" | "inspect">("edit");
+  const [inspecting, setInspecting] = useState<string | null>(null);
   const [phase, setPhase] = useState<"idle" | "publishing" | "done">("idle");
   const [publishedVersion, setPublishedVersion] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -127,6 +130,10 @@ export function EditableSchedule({
 
   function onCellActivate(cell: GridCell) {
     if (!cell.slotId) return;
+    if (mode === "inspect") {
+      setInspecting(cell.slotId);
+      return;
+    }
     if (!selected) {
       setSelected(cell.slotId);
       return;
@@ -211,10 +218,27 @@ export function EditableSchedule({
             {isAttending ? "Service-Week Schedule" : "Block Schedule"}
           </h1>
           <p className="text-[12px] text-muted-foreground">
-            {`${state.people.length} ${isAttending ? "attendings" : "fellows"} · 13 four-week blocks`} · click
-            a {isAttending ? "service" : "rotation"} assignment, then another in the same block, to swap
-            them. Every edit is checked live and locks in place.
+            {`${state.people.length} ${isAttending ? "attendings" : "fellows"} · 13 four-week blocks`} ·{" "}
+            {mode === "edit"
+              ? `click a ${isAttending ? "service" : "rotation"} assignment, then another in the same block, to swap them. Every edit is checked live and locks in place.`
+              : "click any assignment to see why that person holds it — and who else could."}
           </p>
+        </div>
+        <div className="flex shrink-0 items-center rounded-r1 border border-border p-0.5 text-[11.5px]">
+          {(["edit", "inspect"] as const).map((m) => (
+            <button
+              key={m}
+              onClick={() => {
+                setMode(m);
+                setSelected(null);
+              }}
+              className={`rounded-[5px] px-2.5 py-1 capitalize transition-colors ${
+                mode === m ? "bg-surface-raised font-medium text-foreground" : "text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              {m}
+            </button>
+          ))}
         </div>
       </div>
 
@@ -305,6 +329,10 @@ export function EditableSchedule({
         <div className="rounded-r2 border border-status-ok-bg bg-status-ok-bg/50 px-3 py-2.5 text-[12px] text-status-ok">
           Published as v{publishedVersion}. Your edits are locked in and everyone affected will be notified.
         </div>
+      )}
+
+      {inspecting && (
+        <AssignmentInspector state={state} slotId={inspecting} onClose={() => setInspecting(null)} />
       )}
     </div>
   );
