@@ -119,9 +119,11 @@ judged-demo features, then robustness.
 - 📋 **MED · Import hardening.** Upload byte cap with a clean error, per-row
   eligibility/availability/duplicate flags on a confirm screen, downloadable
   template. *(readers A#14–16/#54, code#4/#5.)*
-- 📋 **MED · Emergency read-only / offline roster.** A static who's-on-now export
-  stamped with version + timestamp + timezone + next handoff, plus a "printed
-  copies may be outdated" warning. *(reader A#40.)*
+- ✅ **MED · Emergency read-only / offline roster — DONE & DEPLOYED (2026-07-12).**
+  Standalone grayscale `/print` roster (Export → "Print / offline roster"):
+  print-to-PDF or save-page for an offline copy, monochrome/border-driven, call
+  roster + block grid, stamped with version + generation timestamp + "a saved copy
+  may be out of date." *(reader A#40, + grayscale print from A#42/#76.)*
 - 📋 **LOW · Per-slot burden weight.** Weight fairness by burden (a call night ≠
   a clinic half-day), not raw count. *(reader A#29, code#9.)*
 - 📋 **MED · Attending min / target / max as three independent optional fields.**

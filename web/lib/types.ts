@@ -321,6 +321,8 @@ export interface StateResponse {
   locks: Lock[];
   /** Program holidays — drive holiday-call equity and the fairness ledger. */
   holidays: Holiday[];
+  /** Whether the loaded program is the illustrative sample or a real import. */
+  dataSource: "sample" | "imported";
   /** Latest published version, null before first publish. */
   currentVersion: ScheduleVersion | null;
 }

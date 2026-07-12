@@ -130,7 +130,7 @@ export async function getCurrentVersion(): Promise<ScheduleVersion | null> {
 }
 
 export async function getState(): Promise<StateResponse> {
-  const [people, services, slots, rules, assignments, absences, locks, holidays, currentVersion] =
+  const [people, services, slots, rules, assignments, absences, locks, holidays, sourceEvent, currentVersion] =
     await Promise.all([
       prisma.person.findMany({ orderBy: [{ level: "asc" }, { name: "asc" }] }),
       prisma.service.findMany({ orderBy: { id: "asc" } }),
@@ -140,8 +140,14 @@ export async function getState(): Promise<StateResponse> {
       prisma.absence.findMany({ orderBy: { start: "asc" } }),
       prisma.lock.findMany(),
       prisma.holiday.findMany({ orderBy: { date: "asc" } }),
+      prisma.scheduleEvent.findFirst({
+        where: { eventType: { in: ["seed", "import"] } },
+        orderBy: { createdAt: "desc" },
+      }),
       getCurrentVersion(),
     ]);
+  const dataSource: "sample" | "imported" =
+    (sourceEvent as { eventType?: string } | null)?.eventType === "import" ? "imported" : "sample";
 
   return {
     people: people.map((r) => toPerson(r as unknown as Row)),
@@ -152,6 +158,7 @@ export async function getState(): Promise<StateResponse> {
     absences: absences.map((r) => toAbsence(r as unknown as Row)),
     locks: locks.map((r) => toLock(r as unknown as Row)),
     holidays: (holidays as unknown as Row[]).map((h) => ({ date: h.date as string, name: h.name as string })),
+    dataSource,
     currentVersion,
   };
 }

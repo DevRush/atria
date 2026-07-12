@@ -104,4 +104,9 @@ export async function seedProgram(prisma: any, p: Program): Promise<void> {
     } as unknown as StateResponse;
     await storeProjection(prisma, stateLike);
   }
+  // mark the data source (append-only audit): this is the illustrative sample,
+  // not a real imported roster. Cleared implicitly when an import logs later.
+  await prisma.scheduleEvent.create({
+    data: { actor: "system", eventType: "seed", detail: { source: "sample-bundle" }, createdAt: new Date().toISOString() },
+  });
 }

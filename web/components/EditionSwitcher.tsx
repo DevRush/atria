@@ -6,12 +6,16 @@ import { useEffect, useState } from "react";
  * replaces the loaded program. */
 export function EditionSwitcher() {
   const [edition, setEdition] = useState<"training" | "attending" | null>(null);
+  const [isSample, setIsSample] = useState(false);
   const [busy, setBusy] = useState(false);
 
   useEffect(() => {
     fetch("/api/state", { cache: "no-store" })
       .then((r) => r.json())
-      .then((d) => setEdition(d.people?.some((p: { level: string }) => p.level === "Attending") ? "attending" : "training"))
+      .then((d) => {
+        setEdition(d.people?.some((p: { level: string }) => p.level === "Attending") ? "attending" : "training");
+        setIsSample(d.dataSource !== "imported");
+      })
       .catch(() => {});
   }, []);
 
@@ -35,6 +39,14 @@ export function EditionSwitcher() {
 
   return (
     <div className="hidden items-center gap-2 sm:flex">
+      {isSample && (
+        <span
+          className="inline-flex items-center gap-1 rounded-r1 border border-status-warn-border bg-status-warn-bg/60 px-1.5 py-0.5 text-[10px] font-medium text-status-warn"
+          title="This is an illustrative sample program, not a real roster. Import your own schedule to replace it."
+        >
+          Sample data
+        </span>
+      )}
       <span className="text-[12px] text-muted-foreground">{label} · AY 2026–27</span>
       <div className="inline-flex overflow-hidden rounded-r1 border border-border text-[10.5px]">
         <button

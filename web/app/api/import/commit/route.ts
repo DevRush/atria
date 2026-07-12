@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import fs from "node:fs";
 import path from "node:path";
 import { prisma } from "@/lib/db";
+import { getState } from "@/lib/state";
+import { storeProjection } from "@/lib/projection-store";
 import { solverPost } from "@/lib/solver";
 import { rateLimit } from "@/lib/ratelimit";
 import type { ParseResult } from "@/lib/import-parse";
@@ -137,6 +139,10 @@ export async function POST(req: Request) {
     await tx.slot.deleteMany({});
     await tx.service.deleteMany({});
     await tx.person.deleteMany({});
+    // imported programs don't declare the sample's holidays; clear stale sample
+    // holidays and the sample's frozen projection so nothing carries over.
+    await tx.holiday.deleteMany({});
+    await tx.publicProjection.deleteMany({});
 
     await tx.person.createMany({ data: people.map((p) => ({ ...p, eligibleServices: p.eligibleServices as object })) });
     await tx.service.createMany({ data: services.map((s) => ({ ...s, coverage: s.coverage as object })) });
@@ -157,6 +163,22 @@ export async function POST(req: Request) {
       },
     });
   });
+
+  // freeze the projection for the imported program, and mark the data source so
+  // the app can honestly label imported data as NOT the sample.
+  try {
+    await storeProjection(prisma, await getState());
+    await prisma.scheduleEvent.create({
+      data: {
+        actor: "coordinator",
+        eventType: "import",
+        detail: { source: parse.programName, fellows: people.length } as object,
+        createdAt: new Date().toISOString(),
+      },
+    });
+  } catch (e) {
+    console.error("post-import projection/marker failed", e);
+  }
 
   return NextResponse.json({
     ok: true,
