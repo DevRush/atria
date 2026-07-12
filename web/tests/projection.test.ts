@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { buildPublicProjection } from "../lib/projection";
+import { buildPublicProjection, verifyStoredProjection } from "../lib/projection";
 import type { StateResponse } from "../lib/types";
 
 function fixture(): StateResponse {
@@ -47,4 +47,18 @@ test("projection carries the version stamp and content hash", () => {
   const p = buildPublicProjection(fixture());
   assert.equal(p.version, 1);
   assert.match(p.contentHash, /^sha256:[0-9a-f]{32}$/);
+});
+
+test("verifyStoredProjection accepts a genuine projection, rejects tampering", () => {
+  const proj = buildPublicProjection(fixture());
+  assert.equal(verifyStoredProjection(proj), true);
+  // altering a rendered name after publish is detected
+  const tampered = structuredClone(proj);
+  tampered.blocks[0].person = "Z. Hacker";
+  assert.equal(verifyStoredProjection(tampered), false);
+  // swapping in a different hash is detected
+  assert.equal(
+    verifyStoredProjection({ ...proj, contentHash: "sha256:deadbeefdeadbeefdeadbeefdeadbeef" }),
+    false
+  );
 });

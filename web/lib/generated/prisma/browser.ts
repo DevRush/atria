@@ -58,6 +58,11 @@ export type Lock = Prisma.LockModel
  */
 export type Holiday = Prisma.HolidayModel
 /**
+ * Model PublicProjection
+ * 
+ */
+export type PublicProjection = Prisma.PublicProjectionModel
+/**
  * Model ScheduleVersion
  * 
  */

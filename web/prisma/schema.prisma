@@ -110,6 +110,16 @@ model Holiday {
   name String
 }
 
+// Frozen public projection, one per published version. Built at publish (and at
+// seed) from the strict allowlist; the public share route reads THIS, never the
+// live internal schedule, and re-hashes it on read — a mismatch is tamper-evident.
+model PublicProjection {
+  version     Int    @id
+  payload     Json // the full PublicProjection object (allowlisted fields only)
+  contentHash String // sha256 of the payload body, verified on every read
+  createdAt   String // ISO-8601 datetime
+}
+
 model ScheduleVersion {
   version     Int     @id
   publishedAt String // ISO-8601 datetime

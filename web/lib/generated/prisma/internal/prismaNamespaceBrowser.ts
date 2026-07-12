@@ -59,6 +59,7 @@ export const ModelName = {
   Rule: 'Rule',
   Lock: 'Lock',
   Holiday: 'Holiday',
+  PublicProjection: 'PublicProjection',
   ScheduleVersion: 'ScheduleVersion',
   ScheduleEvent: 'ScheduleEvent',
   ShareToken: 'ShareToken'
@@ -172,6 +173,16 @@ export const HolidayScalarFieldEnum = {
 } as const
 
 export type HolidayScalarFieldEnum = (typeof HolidayScalarFieldEnum)[keyof typeof HolidayScalarFieldEnum]
+
+
+export const PublicProjectionScalarFieldEnum = {
+  version: 'version',
+  payload: 'payload',
+  contentHash: 'contentHash',
+  createdAt: 'createdAt'
+} as const
+
+export type PublicProjectionScalarFieldEnum = (typeof PublicProjectionScalarFieldEnum)[keyof typeof PublicProjectionScalarFieldEnum]
 
 
 export const ScheduleVersionScalarFieldEnum = {

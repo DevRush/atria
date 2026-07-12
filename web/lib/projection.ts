@@ -40,6 +40,19 @@ function abbreviate(name: string): string {
 
 const WD = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
+/** The single source of truth for how a projection body is hashed. Used at build
+ * time and at verify-on-read time so a stored projection is tamper-evident. */
+export function hashProjectionBody(body: Omit<PublicProjection, "contentHash">): string {
+  return "sha256:" + createHash("sha256").update(JSON.stringify(body)).digest("hex").slice(0, 32);
+}
+
+/** Re-derive the hash from a stored projection's body and compare it to the
+ * stored contentHash. A mismatch means the payload was altered after publish. */
+export function verifyStoredProjection(payload: PublicProjection): boolean {
+  const { contentHash, ...body } = payload;
+  return !!contentHash && hashProjectionBody(body) === contentHash;
+}
+
 export function buildPublicProjection(state: StateResponse): PublicProjection {
   const slotById = new Map(state.slots.map((s) => [s.id, s]));
   const nameById = new Map(state.people.map((p) => [p.id, abbreviate(p.name)]));
@@ -90,7 +103,5 @@ export function buildPublicProjection(state: StateResponse): PublicProjection {
     blockLabels: blocks.map((b) => b.label),
     blocks: rows,
   };
-  const contentHash =
-    "sha256:" + createHash("sha256").update(JSON.stringify(body)).digest("hex").slice(0, 32);
-  return { ...body, contentHash };
+  return { ...body, contentHash: hashProjectionBody(body) };
 }

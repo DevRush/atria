@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { getState } from "@/lib/state";
+import { storeProjection } from "@/lib/projection-store";
 import { rateLimit } from "@/lib/ratelimit";
 import { solverPost, SolverHttpError, SolverUnreachableError } from "@/lib/solver";
 import type {
@@ -201,6 +202,14 @@ export async function POST(req: Request) {
       },
     });
   });
+
+  // Freeze the tamper-evident public projection for this new version (best-effort:
+  // a store failure must not fail an already-committed publish).
+  try {
+    await storeProjection(prisma, await getState());
+  } catch (e) {
+    console.error("projection store failed for v" + nextVersion, e);
+  }
 
   const response: PublishResponseOk = {
     ok: true,

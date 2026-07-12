@@ -392,6 +392,7 @@ export const ModelName = {
   Rule: 'Rule',
   Lock: 'Lock',
   Holiday: 'Holiday',
+  PublicProjection: 'PublicProjection',
   ScheduleVersion: 'ScheduleVersion',
   ScheduleEvent: 'ScheduleEvent',
   ShareToken: 'ShareToken'
@@ -410,7 +411,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "person" | "service" | "slot" | "assignment" | "absence" | "rule" | "lock" | "holiday" | "scheduleVersion" | "scheduleEvent" | "shareToken"
+    modelProps: "person" | "service" | "slot" | "assignment" | "absence" | "rule" | "lock" | "holiday" | "publicProjection" | "scheduleVersion" | "scheduleEvent" | "shareToken"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1006,6 +1007,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    PublicProjection: {
+      payload: Prisma.$PublicProjectionPayload<ExtArgs>
+      fields: Prisma.PublicProjectionFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.PublicProjectionFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PublicProjectionPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.PublicProjectionFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PublicProjectionPayload>
+        }
+        findFirst: {
+          args: Prisma.PublicProjectionFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PublicProjectionPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.PublicProjectionFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PublicProjectionPayload>
+        }
+        findMany: {
+          args: Prisma.PublicProjectionFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PublicProjectionPayload>[]
+        }
+        create: {
+          args: Prisma.PublicProjectionCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PublicProjectionPayload>
+        }
+        createMany: {
+          args: Prisma.PublicProjectionCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.PublicProjectionCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PublicProjectionPayload>[]
+        }
+        delete: {
+          args: Prisma.PublicProjectionDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PublicProjectionPayload>
+        }
+        update: {
+          args: Prisma.PublicProjectionUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PublicProjectionPayload>
+        }
+        deleteMany: {
+          args: Prisma.PublicProjectionDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.PublicProjectionUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.PublicProjectionUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PublicProjectionPayload>[]
+        }
+        upsert: {
+          args: Prisma.PublicProjectionUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PublicProjectionPayload>
+        }
+        aggregate: {
+          args: Prisma.PublicProjectionAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregatePublicProjection>
+        }
+        groupBy: {
+          args: Prisma.PublicProjectionGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PublicProjectionGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.PublicProjectionCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PublicProjectionCountAggregateOutputType> | number
+        }
+      }
+    }
     ScheduleVersion: {
       payload: Prisma.$ScheduleVersionPayload<ExtArgs>
       fields: Prisma.ScheduleVersionFieldRefs
@@ -1361,6 +1436,16 @@ export const HolidayScalarFieldEnum = {
 export type HolidayScalarFieldEnum = (typeof HolidayScalarFieldEnum)[keyof typeof HolidayScalarFieldEnum]
 
 
+export const PublicProjectionScalarFieldEnum = {
+  version: 'version',
+  payload: 'payload',
+  contentHash: 'contentHash',
+  createdAt: 'createdAt'
+} as const
+
+export type PublicProjectionScalarFieldEnum = (typeof PublicProjectionScalarFieldEnum)[keyof typeof PublicProjectionScalarFieldEnum]
+
+
 export const ScheduleVersionScalarFieldEnum = {
   version: 'version',
   publishedAt: 'publishedAt',
@@ -1613,6 +1698,7 @@ export type GlobalOmitConfig = {
   rule?: Prisma.RuleOmit
   lock?: Prisma.LockOmit
   holiday?: Prisma.HolidayOmit
+  publicProjection?: Prisma.PublicProjectionOmit
   scheduleVersion?: Prisma.ScheduleVersionOmit
   scheduleEvent?: Prisma.ScheduleEventOmit
   shareToken?: Prisma.ShareTokenOmit

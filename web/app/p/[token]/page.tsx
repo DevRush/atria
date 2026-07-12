@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { prisma } from "@/lib/db";
 import { getState } from "@/lib/state";
 import { buildPublicProjection } from "@/lib/projection";
+import { readCurrentProjection } from "@/lib/projection-store";
 import { isValidShareSecret, nowIso, sha256 } from "@/lib/share";
 import { PublicSchedule } from "./public-schedule";
 
@@ -42,6 +43,22 @@ export default async function PublicPage({ params }: { params: Promise<{ token: 
     );
   }
 
-  const projection = buildPublicProjection(await getState());
+  // Read the FROZEN, hash-verified projection for the current published version.
+  // Fall back to a live build only if no frozen artifact exists yet (legacy data).
+  const stored = await readCurrentProjection(prisma);
+  if (stored && !stored.verified) {
+    // The stored payload no longer matches its content hash — do not render it.
+    return (
+      <div className="grid min-h-screen place-items-center bg-background px-6 text-center">
+        <div>
+          <div className="text-[15px] font-semibold">This link isn&apos;t available.</div>
+          <p className="mt-1 max-w-sm text-[12.5px] text-muted-foreground">
+            The published schedule could not be verified. Ask the program coordinator for a current link.
+          </p>
+        </div>
+      </div>
+    );
+  }
+  const projection = stored?.projection ?? buildPublicProjection(await getState());
   return <PublicSchedule p={projection} />;
 }

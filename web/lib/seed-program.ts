@@ -6,6 +6,8 @@
  */
 import fs from "node:fs";
 import path from "node:path";
+import type { StateResponse } from "@/lib/types";
+import { storeProjection } from "@/lib/projection-store";
 
 type Row = Record<string, unknown>;
 export type Program = {
@@ -47,6 +49,7 @@ export async function seedProgram(prisma: any, p: Program): Promise<void> {
   await prisma.service.deleteMany();
   await prisma.person.deleteMany();
   await prisma.holiday.deleteMany();
+  await prisma.publicProjection.deleteMany();
 
   await prisma.person.createMany({
     data: p.people.map((x) => ({
@@ -88,5 +91,17 @@ export async function seedProgram(prisma: any, p: Program): Promise<void> {
         inputHash: v.inputHash ?? null, seed: v.seed ?? null,
       },
     });
+    // freeze the public projection for the seeded version, same as a real publish
+    const stateLike = {
+      people: p.people, services: p.services, slots: p.slots, rules: [],
+      assignments: p.assignments, absences: [], locks: [],
+      holidays: (p.holidays ?? []) as { date: string; name: string }[],
+      currentVersion: {
+        version: v.version as number, publishedAt: v.publishedAt as string,
+        publishedBy: v.publishedBy as string, parent: null, cause: null, diff: null,
+        inputHash: null, seed: null,
+      },
+    } as unknown as StateResponse;
+    await storeProjection(prisma, stateLike);
   }
 }
