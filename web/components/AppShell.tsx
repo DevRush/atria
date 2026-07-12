@@ -2,6 +2,7 @@ import Link from "next/link";
 import type { ScheduleVersion } from "@/lib/types";
 import { ResetButton } from "./ResetButton";
 import { EditionSwitcher } from "./EditionSwitcher";
+import { ExportMenu } from "./ExportMenu";
 
 export function VersionBadge({ version }: { version: ScheduleVersion | null }) {
   if (!version)
@@ -66,6 +67,7 @@ export function AppShell({
           >
             Import
           </Link>
+          <ExportMenu />
           <ResetButton />
           <EditionSwitcher />
           <VersionBadge version={version} />

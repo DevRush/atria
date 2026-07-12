@@ -80,12 +80,14 @@ judged-demo features, then robustness.
 
 ### Tier 2 — tamper-evidence & separation of duties
 
-- 📋 **HIGH · Immutable published-projection snapshot + content-hash verify-on-read.**
-  We build the public projection *live* at read time and only *display* a hash.
-  Persist the projection + hash at publish (keyed by version), point the share
-  token at a version, and refuse to render if the stored payload's hash doesn't
-  match. Gives a tamper-evident, stable historical public artifact.
-  *(readers A#25/#59, code#2.)*
+- ✅ **HIGH · Immutable projection snapshot + content-hash verify-on-read — DONE
+  & DEPLOYED (2026-07-12).** Every published version freezes its allowlisted
+  projection into a `PublicProjection` row (payload + `contentHash`), written at
+  publish and at seed. The `/p` route reads the frozen artifact and re-hashes it
+  on read — a mismatch renders the generic unavailable page, never the tampered
+  data. `hashProjectionBody`/`verifyStoredProjection` single-source the hashing;
+  test proves a tampered name or swapped hash fails. Verified live via a real
+  share link. *(readers A#25/#59, code#2.)*
 - 📋 **MED · Approval-before-publish (separation of duties).** Add a review/approve
   checkpoint distinct from publish, each capturing a human justification note.
   Achievable single-tenant via `reviewedBy` + an `approved` state, without full
