@@ -197,6 +197,7 @@ export function EditableSchedule({
     }
   }
 
+  const isAttending = state.people.some((p) => p.level === "Attending");
   const hasEdits = edited.size > 0;
   const blocks = validation?.violations.filter((v) => v.severity === "block") ?? [];
   const warns = validation?.violations.filter((v) => v.severity === "warn") ?? [];
@@ -206,10 +207,13 @@ export function EditableSchedule({
     <div className="space-y-3">
       <div className="flex items-end justify-between">
         <div>
-          <h1 className="text-[15px] font-semibold tracking-tight">Block Schedule</h1>
+          <h1 className="text-[15px] font-semibold tracking-tight">
+            {isAttending ? "Service-Week Schedule" : "Block Schedule"}
+          </h1>
           <p className="text-[12px] text-muted-foreground">
-            {`${state.people.length} fellows · 13 four-week blocks`} · click a fellow&apos;s rotation, then
-            another in the same block, to swap them. Every edit is checked live and locks in place.
+            {`${state.people.length} ${isAttending ? "attendings" : "fellows"} · 13 four-week blocks`} · click
+            a {isAttending ? "service" : "rotation"} assignment, then another in the same block, to swap
+            them. Every edit is checked live and locks in place.
           </p>
         </div>
       </div>

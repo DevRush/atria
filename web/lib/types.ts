@@ -11,7 +11,7 @@
 // Vocabulary
 // ---------------------------------------------------------------------------
 
-export type Level = "F1" | "F2" | "F3";
+export type Level = "F1" | "F2" | "F3" | "Attending";
 
 export type Weekday = "MON" | "TUE" | "WED" | "THU" | "FRI" | "SAT" | "SUN";
 

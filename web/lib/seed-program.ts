@@ -19,15 +19,18 @@ export type Program = {
   version: Row | null;
 };
 
-export function loadProgram(): Program {
+export type Edition = "training" | "attending";
+
+export function loadProgram(edition: Edition = "training"): Program {
+  const name = edition === "attending" ? "attending-program.json" : "program.json";
   // works both at repo root (dev) and inside the container (cwd = /app)
   const candidates = [
-    path.resolve(process.cwd(), "data/program.json"),
-    path.resolve(process.cwd(), "web/data/program.json"),
-    path.resolve(__dirname, "../data/program.json"),
+    path.resolve(process.cwd(), "data", name),
+    path.resolve(process.cwd(), "web/data", name),
+    path.resolve(__dirname, "../data", name),
   ];
   const file = candidates.find((c) => fs.existsSync(c));
-  if (!file) throw new Error("data/program.json not found");
+  if (!file) throw new Error(`data/${name} not found`);
   return JSON.parse(fs.readFileSync(file, "utf8"));
 }
 

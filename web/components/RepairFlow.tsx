@@ -84,6 +84,11 @@ export function RepairFlow({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // "now" = five days before the absence, so notice-weighting is realistic in either edition
+  const nowBeforeAbsence = demoAbsence
+    ? new Date(new Date(demoAbsence.start + "T12:00:00").getTime() - 5 * 86400000).toISOString().slice(0, 10)
+    : "";
+
   if (!demoAbsence || !victim) return null;
 
   async function runRepair() {
@@ -98,7 +103,7 @@ export function RepairFlow({
         locks: state.locks,
         baseAssignments: state.assignments,
         absences: [demoAbsence],
-        event: { kind: "absence", absenceId: demoAbsence.id, now: "2026-09-08" },
+        event: { kind: "absence", absenceId: demoAbsence.id, now: nowBeforeAbsence },
         maxCandidates: 3,
         seed: 4711,
       };
@@ -178,7 +183,7 @@ export function RepairFlow({
               <span className="tnum">{fmtDate(demoAbsence.end)}</span>
             </div>
             <div className="text-[11.5px] text-muted-foreground">
-              Overlaps her weekend in-house call on Sat Sep 12. Coverage must be restored without
+              Overlaps their on-call coverage in that window. Coverage must be restored without
               disturbing the rest of the published schedule.
             </div>
           </div>

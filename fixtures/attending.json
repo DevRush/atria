@@ -8050,8 +8050,8 @@
     {
       "id": "abs_a1",
       "personId": "p_okonkwo",
-      "start": "2026-10-16",
-      "end": "2026-10-18",
+      "start": "2026-10-18",
+      "end": "2026-10-20",
       "type": "leave",
       "reasonCode": "OPAQUE-A1",
       "status": "approved"
