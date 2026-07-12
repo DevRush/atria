@@ -15,4 +15,4 @@ RUN npx prisma generate && npm run build
 
 ENV NODE_ENV=production
 # On boot: create the SQLite schema, load the bundled program, serve.
-CMD ["sh", "-c", "npx prisma db push --skip-generate --accept-data-loss && npx tsx prisma/seed.ts && npx next start -p ${PORT:-3000} -H 0.0.0.0"]
+CMD ["sh", "-c", "npx prisma db push --accept-data-loss && npx tsx prisma/seed.ts && npx next start -p ${PORT:-3000} -H 0.0.0.0"]
