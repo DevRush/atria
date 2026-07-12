@@ -34,6 +34,25 @@ Redeploy after the env var is set so the web picks it up:
 railway up --service web
 ```
 
+## Cost & abuse protection
+
+The solver's `/solve` and `/repair` do CPU-heavy CP-SAT work, so they're guarded:
+
+- **Shared key:** both services have an `ATRIA_KEY` env var; the solver rejects any `/solve`,
+  `/repair`, or `/validate` request without the matching `x-atria-key` header with a cheap `401`.
+  Only the web app (which has the key) can trigger a solve — public scanners can't.
+- **Rate limiting:** the solver has a global sliding-window cap; the web rate-limits every
+  compute route per IP (solve 8/min, repair 12, publish 20, validate 40, import 6–10).
+
+**Two protections you must set in the Railway dashboard (not available via CLI):**
+
+1. **Hard spending cap — the real guarantee.** Dashboard → your workspace → **Settings → Usage** →
+   set a **Hard Limit** (e.g. $5–10/mo). When hit, Railway shuts the services down — you cannot be
+   charged past it.
+2. **App Sleeping (serverless) — ~zero idle cost.** For **each** service (atria-web, atria-solver):
+   Settings → **Serverless / App Sleeping** → enable. Services sleep when idle and wake on the next
+   request, so a demo that sits unused costs almost nothing.
+
 ## Notes
 
 - **Database:** SQLite, recreated and re-seeded from the bundled `web/data/program.json` on every
