@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { getState } from "@/lib/state";
+import { rateLimit } from "@/lib/ratelimit";
 import { solverPost, SolverHttpError, SolverUnreachableError } from "@/lib/solver";
 import type {
   Assignment,
@@ -28,6 +29,8 @@ export const dynamic = "force-dynamic";
  * metadata, superseding changed assignment rows append-only.
  */
 export async function POST(req: Request) {
+  const limited = rateLimit(req, { max: 20, key: "publish" });
+  if (limited) return limited;
   const body = (await req.json().catch(() => null)) as PublishRequest | null;
   if (!body || !Array.isArray(body.assignments) || body.assignments.length === 0) {
     return NextResponse.json(

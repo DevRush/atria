@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { solverPost, SolverHttpError, SolverUnreachableError } from "@/lib/solver";
+import { rateLimit } from "@/lib/ratelimit";
 import type { SolveResponse } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
@@ -10,6 +11,8 @@ export const dynamic = "force-dynamic";
  * nothing is written to the schedule here — publish is a separate call.
  */
 export async function POST(req: Request) {
+  const limited = rateLimit(req, { max: 8, key: "solve" });
+  if (limited) return limited;
   const payload = await req.json().catch(() => null);
   if (!payload) {
     return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });

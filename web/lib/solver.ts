@@ -29,10 +29,12 @@ export async function solverPost<T>(
   payload: unknown
 ): Promise<T> {
   let res: Response;
+  const headers: Record<string, string> = { "content-type": "application/json" };
+  if (process.env.ATRIA_KEY) headers["x-atria-key"] = process.env.ATRIA_KEY;
   try {
     res = await fetch(`${SOLVER_URL}${endpoint}`, {
       method: "POST",
-      headers: { "content-type": "application/json" },
+      headers,
       body: JSON.stringify(payload),
       cache: "no-store",
     });

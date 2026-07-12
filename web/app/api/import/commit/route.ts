@@ -3,6 +3,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { prisma } from "@/lib/db";
 import { solverPost } from "@/lib/solver";
+import { rateLimit } from "@/lib/ratelimit";
 import type { ParseResult } from "@/lib/import-parse";
 import type { SolveResponse } from "@/lib/types";
 
@@ -26,6 +27,8 @@ const WEEKDAYS = ["MON", "TUE", "WED", "THU", "FRI"];
  * publishes it as version 1. Replaces the current single-tenant program.
  */
 export async function POST(req: Request) {
+  const limited = rateLimit(req, { max: 6, key: "import-commit" });
+  if (limited) return limited;
   const parse = (await req.json().catch(() => null)) as ParseResult | null;
   if (!parse?.people?.length || !parse.assignments?.length) {
     return NextResponse.json({ error: "Nothing to import." }, { status: 400 });

@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { parseScheduleWorkbook } from "@/lib/import-parse";
+import { rateLimit } from "@/lib/ratelimit";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
@@ -7,6 +8,8 @@ export const runtime = "nodejs";
 /** POST /api/import/parse — multipart upload of an .xlsx schedule; returns a
  * confirmable ParseResult. Nothing is written until /api/import/commit. */
 export async function POST(req: Request) {
+  const limited = rateLimit(req, { max: 10, key: "import-parse" });
+  if (limited) return limited;
   try {
     const form = await req.formData();
     const file = form.get("file");

@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { solverPost, SolverHttpError, SolverUnreachableError } from "@/lib/solver";
+import { rateLimit } from "@/lib/ratelimit";
 import type { RepairResponse } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
@@ -12,6 +13,8 @@ export const dynamic = "force-dynamic";
  * new version.
  */
 export async function POST(req: Request) {
+  const limited = rateLimit(req, { max: 12, key: "repair" });
+  if (limited) return limited;
   const payload = await req.json().catch(() => null);
   if (!payload) {
     return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
