@@ -93,10 +93,14 @@ judged-demo features, then robustness.
 
 ### Tier 3 — judged-demo features
 
-- 📋 **MED · Assignment inspector / constraint trace.** Click any assignment →
-  *why this person* (eligibility, availability, obligations, rule versions) plus
-  eligible **and** ineligible alternatives each with a reason. Turns "trust the
-  solver" into "inspect the solver." *(readers A#19/#48.)*
+- ✅ **MED · Assignment inspector / constraint trace — DONE & DEPLOYED
+  (2026-07-12).** Inspect mode on the grid: click any assignment → *why this
+  holder* (eligibility/privileges, continuity clinic, lock), who else could cover
+  (eligible, with the swap it causes + call/weekend/holiday load), and who's ruled
+  out with a concrete reason (not credentialed/privileged, or on approved leave).
+  Pure client compute (`lib/inspect.ts`), edition-aware wording, 4 unit tests.
+  Verified: attending EP shows 12 ruled out for lacking privileges. *(readers
+  A#19/#48.)*
 - 📋 **MED · Export + calendar suite.** Version-stamped **grayscale PDF** for
   printing, plus CSV/XLSX/ICS. CSV/XLSX emission MUST neutralize spreadsheet
   formula-injection (`= + - @` prefix). Revocable ICS calendar-feed token with
