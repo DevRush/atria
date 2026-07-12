@@ -77,6 +77,11 @@ export type Rule = Prisma.RuleModel
  */
 export type Lock = Prisma.LockModel
 /**
+ * Model Holiday
+ * 
+ */
+export type Holiday = Prisma.HolidayModel
+/**
  * Model ScheduleVersion
  * 
  */

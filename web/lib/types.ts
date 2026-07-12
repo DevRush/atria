@@ -132,6 +132,12 @@ export interface Absence {
   status: AbsenceStatus;
 }
 
+export interface Holiday {
+  /** YYYY-MM-DD */
+  date: string;
+  name: string;
+}
+
 export interface RuleReplay {
   violationsLastYear: number;
 }
@@ -197,6 +203,8 @@ export interface SolveRequest {
   rules: Rule[];
   locks: Lock[];
   absences: Absence[];
+  /** Program holiday dates (YYYY-MM-DD) — drive holiday-call equity. */
+  holidays?: string[];
   seed?: number;
   timeBudgetSec?: number;
 }
@@ -278,6 +286,7 @@ export interface ValidateRequest {
   rules: Rule[];
   assignments: Assignment[];
   absences: Absence[];
+  holidays?: string[];
 }
 
 export interface Violation {
@@ -308,6 +317,8 @@ export interface StateResponse {
   assignments: Assignment[];
   absences: Absence[];
   locks: Lock[];
+  /** Program holidays — drive holiday-call equity and the fairness ledger. */
+  holidays: Holiday[];
   /** Latest published version, null before first publish. */
   currentVersion: ScheduleVersion | null;
 }

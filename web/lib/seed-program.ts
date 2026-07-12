@@ -16,6 +16,7 @@ export type Program = {
   locks: Row[];
   absences: Row[];
   assignments: Row[];
+  holidays?: { date: string; name: string }[];
   version: Row | null;
 };
 
@@ -45,6 +46,7 @@ export async function seedProgram(prisma: any, p: Program): Promise<void> {
   await prisma.slot.deleteMany();
   await prisma.service.deleteMany();
   await prisma.person.deleteMany();
+  await prisma.holiday.deleteMany();
 
   await prisma.person.createMany({
     data: p.people.map((x) => ({
@@ -73,6 +75,10 @@ export async function seedProgram(prisma: any, p: Program): Promise<void> {
   });
   await prisma.assignment.createMany({ data: p.assignments });
   if (p.locks?.length) await prisma.lock.createMany({ data: p.locks });
+  if (p.holidays?.length)
+    await prisma.holiday.createMany({
+      data: p.holidays.map((h) => ({ date: h.date, name: h.name })),
+    });
   if (p.version) {
     const v = p.version;
     await prisma.scheduleVersion.create({

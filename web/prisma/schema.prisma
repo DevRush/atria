@@ -104,6 +104,12 @@ model Lock {
   assignment Assignment @relation(fields: [assignmentId], references: [id])
 }
 
+// Program holidays — drive holiday-call equity (objective) and the fairness ledger.
+model Holiday {
+  date String @id // YYYY-MM-DD
+  name String
+}
+
 model ScheduleVersion {
   version     Int     @id
   publishedAt String // ISO-8601 datetime

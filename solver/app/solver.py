@@ -76,8 +76,9 @@ class Index:
             if a.status == "approved":
                 self.absent_days[a.personId] |= absence_days(a.start, a.end)
 
-        # holidays passed via slots? no — holidays come on request meta; approximate by weekend
-        self.holiday_dates: set[date] = set()
+        # program holiday dates (YYYY-MM-DD) — a call night landing on one of these
+        # is holiday call, spread for equity in the objective (never a weekend proxy)
+        self.holiday_dates: set[date] = {parse_date(h) for h in getattr(req, "holidays", [])}
 
     def eligible(self, slot: Slot) -> list[Person]:
         svc = slot.serviceId
@@ -285,6 +286,7 @@ def _equity_objective(m, x, idx: Index, rules: list[Rule]):
 
     total = count_var("call_total", lambda s: True)
     weekend = count_var("call_wknd", lambda s: is_weekend(idx.call_date(s)))
+    holiday = count_var("call_hol", lambda s: idx.call_date(s) in idx.holiday_dates)
 
     def spread(cvars, weight, label):
         mx = m.NewIntVar(0, len(idx.call_slots), f"max_{label}")
@@ -296,8 +298,10 @@ def _equity_objective(m, x, idx: Index, rules: list[Rule]):
         m.Add(sp == mx - mn)
         terms.append((weight, sp))
 
-    # weekend equity weighted 'should'; total call balance 'nice'
+    # weekend + holiday equity weighted 'should'; total call balance 'nice'.
+    # holiday spread is a no-op when the program declares no holidays (all-zero vars).
     spread(weekend, TIER_WEIGHT["should"], "wknd")
+    spread(holiday, TIER_WEIGHT["should"], "hol")
     spread(total, TIER_WEIGHT["nice"], "total")
     return terms
 

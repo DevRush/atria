@@ -163,6 +163,31 @@ def s_is_call(a, d):
     return bool(slot and slot["grain"] == "call-night")
 
 
+def test_holiday_equity_is_wired_not_a_no_op():
+    """Regression guard: holiday_dates must be threaded from the request into the
+    engine (it was once hardcoded to an empty set, making holiday_equity a silent
+    no-op) and generation must stay feasible/valid with holidays supplied."""
+    from app.solver import Index
+    d = tiny()
+    hols = ["2026-07-03", "2026-07-07", "2026-07-11", "2026-07-15"]  # >=3 nights apart
+    req = SolveRequest(**d, holidays=hols, seed=1, timeBudgetSec=15)
+    # the request actually reaches the engine index (the line that used to be set())
+    assert {x.isoformat() for x in Index(req).holiday_dates} == set(hols)
+    res = solve_generate(req)
+    assert res.feasible, res.conflicts
+    v = validate(ValidateRequest(people=d["people"], services=d["services"], slots=d["slots"],
+                                 rules=d["rules"], assignments=[a.model_dump() for a in res.assignments]))
+    assert v.ok, [x.text for x in v.violations if x.severity == "block"]
+    # every holiday night is covered, and equity keeps any one fellow from hoarding them
+    share: dict[str, int] = {}
+    for a in res.assignments:
+        parts = a.slotId.split("_")
+        if a.slotId.endswith("_call_1") and len(parts) >= 2 and parts[1] in set(hols):
+            share[a.personId] = share.get(a.personId, 0) + 1
+    assert sum(share.values()) == len(hols)
+    assert max(share.values()) <= 2
+
+
 def test_validator_independence():
     """The validator must not depend on ortools or the solver (trust keystone)."""
     import ast

@@ -274,6 +274,7 @@ function RequestCard({
           locks: state.locks,
           baseAssignments: state.assignments,
           absences: [absence],
+          holidays: state.holidays.map((h) => h.date),
           event: { kind: "absence", absenceId: absence.id, now: AY_MIN },
           maxCandidates: 3,
           seed: 4711,

@@ -103,6 +103,7 @@ export function RepairFlow({
         locks: state.locks,
         baseAssignments: state.assignments,
         absences: [demoAbsence],
+        holidays: state.holidays.map((h) => h.date),
         event: { kind: "absence", absenceId: demoAbsence.id, now: nowBeforeAbsence },
         maxCandidates: 3,
         seed: 4711,

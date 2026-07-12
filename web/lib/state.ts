@@ -130,7 +130,7 @@ export async function getCurrentVersion(): Promise<ScheduleVersion | null> {
 }
 
 export async function getState(): Promise<StateResponse> {
-  const [people, services, slots, rules, assignments, absences, locks, currentVersion] =
+  const [people, services, slots, rules, assignments, absences, locks, holidays, currentVersion] =
     await Promise.all([
       prisma.person.findMany({ orderBy: [{ level: "asc" }, { name: "asc" }] }),
       prisma.service.findMany({ orderBy: { id: "asc" } }),
@@ -139,6 +139,7 @@ export async function getState(): Promise<StateResponse> {
       getPublishedAssignments(),
       prisma.absence.findMany({ orderBy: { start: "asc" } }),
       prisma.lock.findMany(),
+      prisma.holiday.findMany({ orderBy: { date: "asc" } }),
       getCurrentVersion(),
     ]);
 
@@ -150,6 +151,7 @@ export async function getState(): Promise<StateResponse> {
     assignments,
     absences: absences.map((r) => toAbsence(r as unknown as Row)),
     locks: locks.map((r) => toLock(r as unknown as Row)),
+    holidays: (holidays as unknown as Row[]).map((h) => ({ date: h.date as string, name: h.name as string })),
     currentVersion,
   };
 }

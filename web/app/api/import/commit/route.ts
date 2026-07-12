@@ -114,6 +114,7 @@ export async function POST(req: Request) {
   try {
     solved = await solverPost<SolveResponse>("/solve", {
       people, services, slots, rules, locks, assignments: lockAssignments, absences: [],
+      holidays: (fx.holidays ?? []).map((h: { date: string }) => h.date),
       seed: 4711, timeBudgetSec: 60,
     });
   } catch {

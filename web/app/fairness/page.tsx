@@ -34,16 +34,17 @@ export default async function FairnessPage() {
         </div>
 
         <div className="overflow-hidden rounded-r2 border border-border bg-surface">
-          <div className="grid grid-cols-[1fr_auto_auto_auto] gap-4 border-b border-border-strong bg-surface-raised px-3 py-1.5 text-[10.5px] font-medium uppercase tracking-wide text-faint-foreground">
+          <div className="grid grid-cols-[1fr_auto_auto_auto_auto] gap-4 border-b border-border-strong bg-surface-raised px-3 py-1.5 text-[10.5px] font-medium uppercase tracking-wide text-faint-foreground">
             <span>Fellow</span>
             <span className="text-right">Call</span>
             <span className="text-right">Weekend</span>
+            <span className="text-right">Holiday</span>
             <span className="w-40">Load</span>
           </div>
           {sorted.map((r) => (
             <div
               key={r.person.id}
-              className="grid grid-cols-[1fr_auto_auto_auto] items-center gap-4 border-b border-border px-3 py-1.5 text-[12.5px] last:border-0"
+              className="grid grid-cols-[1fr_auto_auto_auto_auto] items-center gap-4 border-b border-border px-3 py-1.5 text-[12.5px] last:border-0"
             >
               <span className="flex items-center gap-2">
                 <span className="grid h-5 w-5 place-items-center rounded-full bg-surface-raised text-[9px] font-semibold text-muted-foreground">
@@ -54,6 +55,7 @@ export default async function FairnessPage() {
               </span>
               <span className="text-right tnum">{r.call}</span>
               <span className="text-right text-muted-foreground tnum">{r.weekend}</span>
+              <span className="text-right text-muted-foreground tnum">{r.holiday}</span>
               <span className="w-40">
                 <span className="block h-1.5 overflow-hidden rounded-full bg-surface-raised">
                   <span

@@ -88,6 +88,7 @@ class SolveRequest(BaseModel):
     locks: list[Lock] = []
     assignments: list[Assignment] = []  # existing assignments locks resolve against
     absences: list[Absence] = []
+    holidays: list[str] = []  # program holiday dates (YYYY-MM-DD) — drive holiday-call equity
     seed: int = 4711
     timeBudgetSec: float = 60.0
 
@@ -112,6 +113,7 @@ class ValidateRequest(BaseModel):
     rules: list[Rule] = []
     assignments: list[Assignment]
     absences: list[Absence] = []
+    holidays: list[str] = []  # program holiday dates (YYYY-MM-DD)
 
 
 class Relaxation(BaseModel):

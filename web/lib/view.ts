@@ -109,7 +109,7 @@ export function buildFairness(state: StateResponse, overrideAssignments?: Assign
   const assignments = overrideAssignments ?? state.assignments;
   const counts = new Map<string, { call: number; weekend: number; holiday: number; jeop: number }>();
   for (const p of state.people) counts.set(p.id, { call: 0, weekend: 0, holiday: 0, jeop: 0 });
-  const holidays = new Set<string>(); // could be passed; weekend proxy below
+  const holidays = new Set(state.holidays.map((h) => h.date)); // real program holidays
   for (const a of assignments) {
     const s = slotById.get(a.slotId);
     if (!s) continue;
@@ -119,6 +119,7 @@ export function buildFairness(state: StateResponse, overrideAssignments?: Assign
       c.call += 1;
       const d = new Date(s.start);
       if (d.getUTCDay() === 0 || d.getUTCDay() === 6) c.weekend += 1;
+      if (holidays.has(s.start.slice(0, 10))) c.holiday += 1;
     } else if (s.grain === "week") {
       c.jeop += 1;
     }
