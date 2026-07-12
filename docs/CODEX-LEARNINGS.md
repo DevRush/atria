@@ -115,9 +115,10 @@ judged-demo features, then robustness.
   prior period's final call/service dates so call-spacing and consecutive limits
   hold across a month/year boundary — matters most on incremental repair
   re-solves. *(reader A#46, code#6.)*
-- 📋 **MED · Import hardening.** Upload byte cap with a clean error, per-row
-  eligibility/availability/duplicate flags on a confirm screen, downloadable
-  template. *(readers A#14–16/#54, code#4/#5.)*
+- ◐ **MED · Import hardening — size/type cap DONE (2026-07-12).** `/api/import/parse`
+  enforces a 4 MB cap (413) and `.xlsx/.xlsm` type check (415) before buffering.
+  Remaining: per-row eligibility/availability/duplicate flags on the confirm
+  screen, downloadable template, CSV path. *(readers A#14–16/#54, code#4/#5.)*
 - ✅ **MED · Emergency read-only / offline roster — DONE & DEPLOYED (2026-07-12).**
   Standalone grayscale `/print` roster (Export → "Print / offline roster"):
   print-to-PDF or save-page for an offline copy, monochrome/border-driven, call
@@ -125,9 +126,17 @@ judged-demo features, then robustness.
   may be out of date." *(reader A#40, + grayscale print from A#42/#76.)*
 - 📋 **LOW · Per-slot burden weight.** Weight fairness by burden (a call night ≠
   a clinic half-day), not raw count. *(reader A#29, code#9.)*
-- 📋 **MED · Attending min / target / max as three independent optional fields.**
-  Minimum = obligation (hard), Target = fairness (soft), Maximum = cap (hard);
-  any may be unset. Plus FTE-prorated fairness targets. *(reader A#45.)*
+- ⚠️ **MED · Attending min/target/max + FTE-weighted fairness — SOLVER WORK,
+  needs bundle regeneration + user validation.** Prototyped an FTE-prorated
+  fairness target view (per-call-domain proration; math verified — targets sum to
+  total call) and it exposed that the attending bundle spreads call by **headcount,
+  not FTE** (a 1.0-FTE attending sits ~30 calls *below* its FTE-fair share, a
+  0.5-FTE ~23 *above*). Shipping the view alone would advertise our own schedule as
+  FTE-unfair, so it was reverted. The correct fix is to FTE-weight the solver's
+  equity objective (and add min=obligation/target=soft/max=cap), then **regenerate
+  the attending bundle and re-patch the repair-demo absence** — a solver change
+  that alters the demo, so it should be done with the user watching, not unattended.
+  *(reader A#45, code#9.)*
 
 ---
 
