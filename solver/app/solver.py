@@ -241,7 +241,7 @@ def _call_spacing(m, x, idx: Index, gap: int, L):
             if (s.id, p.id) in x:
                 calls_by_person[p.id].append((idx.call_date(s), x[(s.id, p.id)]))
     for pid, lst in calls_by_person.items():
-        lst.sort()
+        lst.sort(key=lambda t: t[0])  # by date only — never compare IntVars (multi-domain call shares nights)
         n = len(lst)
         for i in range(n):
             window = [lst[i][1]]
