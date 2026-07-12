@@ -103,10 +103,12 @@ judged-demo features, then robustness.
   Pure client compute (`lib/inspect.ts`), edition-aware wording, 4 unit tests.
   Verified: attending EP shows 12 ruled out for lacking privileges. *(readers
   A#19/#48.)*
-- 📋 **MED · Export + calendar suite.** Version-stamped **grayscale PDF** for
-  printing, plus CSV/XLSX/ICS. CSV/XLSX emission MUST neutralize spreadsheet
-  formula-injection (`= + - @` prefix). Revocable ICS calendar-feed token with
-  minimal event content. *(readers A#60/#76, code#4.)*
+- ◐ **MED · Export + calendar suite — CSV + ICS DONE & DEPLOYED (2026-07-12).**
+  Header Export menu → CSV (formula-injection-neutralized, RFC-4180) and ICS
+  (RFC-5545, timed call nights + all-day rotations, per-person filter). Remaining:
+  a version-stamped **grayscale print view** (browser print-to-PDF, no PDF lib)
+  and a *revocable-token* ICS feed (today it's an authenticated download).
+  *(readers A#60/#76, code#4.)*
 
 ### Tier 4 — robustness
 

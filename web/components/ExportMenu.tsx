@@ -28,6 +28,15 @@ export function ExportMenu() {
           Calendar (iCalendar)
           <span className="font-mono text-[10px] text-faint-foreground">.ics</span>
         </a>
+        <a
+          href="/print"
+          target="_blank"
+          rel="noopener"
+          className="flex items-center justify-between px-3 py-1.5 text-[12px] text-foreground hover:bg-surface"
+        >
+          Print / offline roster
+          <span className="font-mono text-[10px] text-faint-foreground">↗</span>
+        </a>
         <p className="border-t border-border px-3 pb-1 pt-1.5 text-[10px] text-faint-foreground">
           Current published version · CSV is spreadsheet-safe.
         </p>
