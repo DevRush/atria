@@ -68,8 +68,10 @@ npm run dev         # http://localhost:3000
    0 violations**. Nobody else's schedule moves.
 3. **Publish** — accept it. The independent validator runs first; it publishes as **v2**. (Try removing
    a covered slot and it refuses — coverage gaps are unpublishable.)
-5. **On-Call** — the who's-on-call page now shows the substitute for Sat Sep 12. Static, no login,
-   updated the instant the repair published.
+5. **On-Call** — the who's-on-call page now shows the substitute for Sat Sep 12, updated the instant
+   the repair published. Hit **Create link** to mint a secure, revocable share link (`/p/<secret>`):
+   it shows only names, dates, and services (trainee names abbreviated), leaks nothing sensitive, and
+   dies the moment you revoke it — the link you'd actually send to operators.
 6. **Requests** — two flows on one page:
    - *Time off*: a fellow submits time off (use "Fill a sample conflict" for a guaranteed one). It lands
      in the queue tagged with its coverage impact ("affects call Oct 5"). The coordinator hits **Review
@@ -83,6 +85,15 @@ npm run dev         # http://localhost:3000
 
 (Kiosk shortcuts for a hands-free walkthrough: `/?edit=demo` auto-applies a sample swap; `/?repair=auto`
 auto-runs the repair.)
+
+## Docs
+
+- [ARCHITECTURE.md](ARCHITECTURE.md) — services, domain model, the correctness boundary
+- [ROADMAP.md](ROADMAP.md) — ordered by operational trust, not feature count
+- [SECURITY.md](SECURITY.md) · [CONTRIBUTING.md](CONTRIBUTING.md) · [DEPLOY.md](DEPLOY.md)
+- [docs/SPEC-V1.md](docs/SPEC-V1.md) · [docs/DECISION-BRIEF.md](docs/DECISION-BRIEF.md) — the full spec and the reasoning
+
+Licensed under Apache 2.0.
 
 ## Tests
 
