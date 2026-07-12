@@ -1,4 +1,5 @@
 import { AppShell } from "@/components/AppShell";
+import { RuleLevelToggle } from "@/components/RuleLevelToggle";
 import { getState } from "@/lib/state";
 import type { Rule } from "@/lib/types";
 
@@ -59,11 +60,14 @@ export default async function RulesPage() {
                         )}
                       </div>
                     </div>
-                    {r.confirmed && (
-                      <span className="mt-0.5 shrink-0 text-[10px] text-status-ok" title="Confirmed by a human">
-                        ✓ confirmed
-                      </span>
-                    )}
+                    <div className="mt-0.5 flex shrink-0 flex-col items-end gap-1">
+                      {r.confirmed && (
+                        <span className="text-[10px] text-status-ok" title="Confirmed by a human">
+                          ✓ confirmed
+                        </span>
+                      )}
+                      {r.level !== "hard" && <RuleLevelToggle ruleId={r.id} level={r.level} />}
+                    </div>
                   </div>
                 ))}
               </div>
