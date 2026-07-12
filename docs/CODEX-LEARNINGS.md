@@ -115,10 +115,12 @@ judged-demo features, then robustness.
   prior period's final call/service dates so call-spacing and consecutive limits
   hold across a month/year boundary — matters most on incremental repair
   re-solves. *(reader A#46, code#6.)*
-- ◐ **MED · Import hardening — size/type cap DONE (2026-07-12).** `/api/import/parse`
-  enforces a 4 MB cap (413) and `.xlsx/.xlsm` type check (415) before buffering.
-  Remaining: per-row eligibility/availability/duplicate flags on the confirm
-  screen, downloadable template, CSV path. *(readers A#14–16/#54, code#4/#5.)*
+- ◐ **MED · Import hardening — size/type cap + template DONE (2026-07-12).**
+  `/api/import/parse` enforces a 4 MB cap (413) and `.xlsx/.xlsm` type check (415)
+  before buffering. `/api/import/template` serves a blank .xlsx in the exact parser
+  layout (round-trip-validated through our own importer). Remaining: per-row
+  eligibility/availability flags on the confirm screen, CSV path. *(readers
+  A#14–16/#54, code#4/#5.)*
 - ✅ **MED · Emergency read-only / offline roster — DONE & DEPLOYED (2026-07-12).**
   Standalone grayscale `/print` roster (Export → "Print / offline roster"):
   print-to-PDF or save-page for an offline copy, monochrome/border-driven, call
