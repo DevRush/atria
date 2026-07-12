@@ -69,14 +69,13 @@ judged-demo features, then robustness.
   `validatorVersion`; publish persists it plus `validatedAt` on the stored
   validation receipt so the verdict is independently auditable ("which validator,
   when"). *(code#8.)*
-- ◐ **MED · Honest sample-data labeling — public surface already covered; in-app
-  chip deferred.** The public share page already carries version, publish
-  timestamp, "a printed copy may be out of date — always check the live link,"
-  and the content hash — and it must NOT hardcode "sample," since a real program
-  can share the same surface. The remaining piece is an *in-app* "sample data"
-  chip, which needs a correct seed-vs-import marker (set at seed, cleared on
-  import) rather than a fragile roster-id heuristic. Tracked as its own change.
-  *(reader A#59.)*
+- ✅ **MED · Honest sample-data labeling — DONE & DEPLOYED (2026-07-12).** A
+  header "Sample data" chip shows while the loaded program is the illustrative
+  sample, driven by a real seed-vs-import marker (append-only `ScheduleEvent`:
+  seed→"seed", import→"import"); `getState` reports `dataSource` and the chip
+  clears once a real schedule is imported. The public share surface was already
+  appropriately labeled (version/timestamp/"may be out of date"/hash) and
+  deliberately does not hardcode "sample." *(reader A#59.)*
 
 ### Tier 2 — tamper-evidence & separation of duties
 

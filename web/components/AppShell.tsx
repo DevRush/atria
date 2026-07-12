@@ -26,7 +26,7 @@ export function AppShell({
   children,
 }: {
   version: ScheduleVersion | null;
-  active: "schedule" | "requests" | "rules" | "fairness" | "oncall" | "import";
+  active: "schedule" | "requests" | "rules" | "fairness" | "oncall" | "history" | "import";
   children: React.ReactNode;
 }) {
   const nav = [
@@ -35,6 +35,7 @@ export function AppShell({
     { key: "rules", label: "Rules", href: "/rules" },
     { key: "fairness", label: "Fairness", href: "/fairness" },
     { key: "oncall", label: "On-Call", href: "/oncall" },
+    { key: "history", label: "History", href: "/history" },
   ] as const;
   return (
     <div className="flex min-h-full flex-col">
