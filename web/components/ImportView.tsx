@@ -66,7 +66,12 @@ export function ImportView() {
         <h1 className="text-[15px] font-semibold tracking-tight">Import a schedule</h1>
         <p className="text-[12px] text-muted-foreground">
           Upload last year&apos;s block schedule as an Excel file. Atria reads the grid — merged cells,
-          footnotes, code legend and all — and shows you exactly what it found before anything is saved.
+          footnotes, code legend and all — and shows you exactly what it found before anything is saved.{" "}
+          Don&apos;t have one handy?{" "}
+          <a href="/api/import/template" download className="text-accent underline underline-offset-2 hover:opacity-80">
+            Download a blank template
+          </a>
+          .
         </p>
       </div>
 
