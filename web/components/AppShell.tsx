@@ -75,7 +75,7 @@ export function AppShell({
           <VersionBadge version={version} />
         </div>
       </header>
-      <main className="flex-1">{children}</main>
+      <main key={active} className="bp-fade-in flex-1">{children}</main>
     </div>
   );
 }
