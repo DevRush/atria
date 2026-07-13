@@ -4,6 +4,7 @@ import type { Assignment, Conflict, Person, Slot, StateResponse } from "@/lib/ty
 import { assembleRotationRequest, eligibilityByLevel, rotationCoverage } from "@/lib/assemble";
 import { initials } from "@/lib/view";
 import { ScheduleGrid } from "./ScheduleGrid";
+import { AnnualAllocation } from "./AnnualAllocation";
 import { SolveProgress } from "./SolveProgress";
 
 const LEVELS = ["F1", "F2", "F3"] as const;
@@ -299,6 +300,7 @@ export function ProgramBuilder({ base }: { base: StateResponse }) {
               {phase === "publishing" ? "Publishing…" : "Publish as the live schedule"}
             </button>
           </div>
+          <AnnualAllocation state={resultState} />
           <ScheduleGrid state={resultState} assignments={result!.assignments} animateIn />
           <p className="text-[11px] text-faint-foreground">
             On-call &amp; jeopardy carry over from the current schedule; publishing makes these rotations the
