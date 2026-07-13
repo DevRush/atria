@@ -8,6 +8,8 @@ schedule in seconds — a full residency/fellowship academic year, or a private 
 minimal disruption when someone calls in sick, and **publishes** one trustworthy source of truth with a
 free who's-on-call page anyone can read.
 
+![Atria on-call calendar — a generated month of attending call, colored by physician, weekends and holidays flagged](docs/img/oncall-calendar.png)
+
 ## The problem
 
 One of the most labor-intensive wastes of time for doctors is the weekly/monthly/annual schedule-making
@@ -29,6 +31,8 @@ unnecessary burden that is prime for automation, and there is no free or automat
 for doctors in training.
 
 ## What it does
+
+![The Build screen — define your roster, set what each rotation needs, and the constraints being enforced](docs/img/build-generate.png)
 
 - **Build a schedule** — edit your roster and what each rotation needs, press Generate, and the CP-SAT
   constraint engine places everyone, honors every duty-hour rule, and balances call — a full academic
