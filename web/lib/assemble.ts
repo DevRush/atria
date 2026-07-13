@@ -98,3 +98,54 @@ export function assembleRotationRequest(
 function mk(pi: number, p: { start: string; end: string }, serviceId: string, i: number): Slot {
   return { id: `bslot_${pi}_${serviceId}_${i}`, serviceId, start: p.start, end: p.end, grain: "block", roleIndex: i };
 }
+
+// ---- Monthly call (attending edition) ----
+
+/** The call domains in this program (e.g. interventional STEMI + general). */
+export function callServices(base: StateResponse) {
+  return base.services.filter((s) => s.kind === "call");
+}
+
+function nextDay(iso: string): string {
+  const d = new Date(iso + "T12:00:00Z");
+  d.setUTCDate(d.getUTCDate() + 1);
+  return d.toISOString().slice(0, 10);
+}
+
+/** Assemble a solve request for ONE month of call: one slot per night per call
+ * domain (STEMI can only go to the credentialed; the solver enforces that). */
+export function assembleMonthlyCallRequest(
+  base: StateResponse,
+  people: Person[],
+  year: number,
+  month: number
+): { request: SolveRequest; slots: Slot[] } {
+  const cs = callServices(base);
+  const daysInMonth = new Date(Date.UTC(year, month + 1, 0)).getUTCDate();
+  const slots: Slot[] = [];
+  for (let d = 1; d <= daysInMonth; d++) {
+    const date = `${year}-${String(month + 1).padStart(2, "0")}-${String(d).padStart(2, "0")}`;
+    const end = nextDay(date);
+    for (const svc of cs) {
+      slots.push({
+        id: `cslot_${date}_${svc.id}`,
+        serviceId: svc.id,
+        start: `${date}T17:00:00-05:00`,
+        end: `${end}T07:00:00-05:00`,
+        grain: "call-night",
+        roleIndex: 1,
+      });
+    }
+  }
+  const request: SolveRequest = {
+    people,
+    services: base.services,
+    slots,
+    rules: base.rules,
+    locks: [],
+    absences: [],
+    seed: 4711,
+    timeBudgetSec: 15,
+  };
+  return { request, slots };
+}

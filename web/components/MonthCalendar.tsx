@@ -1,5 +1,5 @@
 "use client";
-import { useMemo, useState } from "react";
+import { useMemo, useState, type CSSProperties } from "react";
 import type { StateResponse } from "@/lib/types";
 import { buildMonthCalendar, callMonths, monthName, personColorMap } from "@/lib/calendar";
 
@@ -9,7 +9,7 @@ const lastName = (n: string) => n.replace(/,?\s*(MD|DO|MBBS)\.?$/i, "").trim().s
 /** A real wall-calendar month view of the on-call schedule: weekends shaded,
  * holidays flagged, each physician a stable color, coverage domain + shift hours
  * on every day. The month-to-month view a coordinator actually reads. */
-export function MonthCalendar({ state }: { state: StateResponse }) {
+export function MonthCalendar({ state, animateIn = false }: { state: StateResponse; animateIn?: boolean }) {
   const months = useMemo(() => callMonths(state), [state]);
   const colors = useMemo(() => personColorMap(state), [state]);
   const [idx, setIdx] = useState(() => {
@@ -89,8 +89,8 @@ export function MonthCalendar({ state }: { state: StateResponse }) {
                       return (
                         <div
                           key={j}
-                          className="rounded px-1.5 py-0.5 leading-tight"
-                          style={{ background: c?.bg, color: c?.fg }}
+                          className={`rounded px-1.5 py-0.5 leading-tight ${animateIn ? "bp-cell-animate" : ""}`}
+                          style={{ background: c?.bg, color: c?.fg, ...(animateIn ? { ["--bp-delay"]: `${i * 16 + j * 40}ms` } : {}) } as CSSProperties}
                           title={`${e.person} · ${e.code} · on-call 17:00 → 07:00`}
                         >
                           <div className="truncate text-[10.5px] font-semibold">{lastName(e.person)}</div>
