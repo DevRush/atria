@@ -5,8 +5,7 @@ import { CallBuilder } from "@/components/CallBuilder";
 
 export const dynamic = "force-dynamic";
 
-/** The schedule maker — the front door. Trainees build the academic-year rotation
- * schedule; attending groups build a month of call. Both run the same engine. */
+/** Alias of the landing maker, kept so any old /build links still work. */
 export default async function BuildPage() {
   const state = await getState();
   const isAttending = state.people.some((p) => p.level === "Attending");

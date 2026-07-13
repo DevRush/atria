@@ -30,8 +30,8 @@ export function AppShell({
   children: React.ReactNode;
 }) {
   const nav = [
-    { key: "build", label: "Build", href: "/build" },
-    { key: "schedule", label: "Schedule", href: "/" },
+    { key: "build", label: "Build", href: "/" },
+    { key: "schedule", label: "Schedule", href: "/schedule" },
     { key: "requests", label: "Requests", href: "/requests" },
     { key: "rules", label: "Rules", href: "/rules" },
     { key: "fairness", label: "Fairness", href: "/fairness" },
