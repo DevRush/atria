@@ -1,104 +1,90 @@
-# Atria — the living schedule for medicine
+# Atria — the schedule maker for medicine
 
-Trainee-first physician scheduling. Atria **generates** a residency/fellowship schedule from a program's
-rules, **validates** it against ACGME duty-hour limits and COCATS requirements, **repairs** it with minimal
-disruption when someone calls in sick, and **publishes** one trustworthy source of truth — with a free
-who's-on-call page anyone can read.
+**Live demo:** https://atria-web-production.up.railway.app · **Code:** https://github.com/DevRush/atria
 
-Built for the Built-with-Claude Life Sciences hackathon. The wedge no incumbent has: **minimal-disruption
-mid-year repair** + **AI rule capture** + a **free who's-on-call read path**.
+Define your program's rules and roster, press **Generate**, and Atria builds a complete, valid, fair
+schedule in seconds — a full residency/fellowship academic year, or a private group's monthly call. It
+**validates** every schedule against ACGME duty-hour limits and program requirements, **repairs** it with
+minimal disruption when someone calls in sick, and **publishes** one trustworthy source of truth with a
+free who's-on-call page anyone can read.
+
+## The problem
+
+One of the most labor-intensive wastes of time for doctors is the weekly/monthly/annual schedule-making
+process. It's done almost exclusively by hand, by an individual or a small team. It's a major
+administrative burden in medical training (every residency and fellowship) and in clinical practice as
+attendings. Expensive software exists, but it doesn't reliably actually *create* the schedule — and it's
+paywalled for what is a rote, automatable task: schedule-making is just plugging in a large set of rules
+and letting a scheduler follow those constraints.
+
+The burden is worst in training, where programs often can't afford the premium tools, so **trainees spend
+dozens of hours** — clinical time, training time, and honestly rest time — doing something that should
+take under an hour. And the review almost always falls on the *head* of the group to sign off ("time to
+make next year's schedule… ugh" is a thing you'll actually hear).
+
+Atria lets any residency, fellowship, private practice, or academic group set the rules of their practice
+(call, rotation minimums/maximums, variable hours, jeopardy coverage, duty-hour limits) and their roster,
+and it makes the schedule automatically. It's an unsexy idea — a doctor-schedule-maker — but it's a large,
+unnecessary burden that is prime for automation, and there is no free or automated tool, especially not
+for doctors in training.
+
+## What it does
+
+- **Build a schedule** — edit your roster and what each rotation needs, press Generate, and the CP-SAT
+  constraint engine places everyone, honors every duty-hour rule, and balances call — a full academic
+  year in seconds. Over-constrain it and it explains *which rules collide* and what to relax, instead of
+  failing silently.
+- **Two markets, one engine** — a **trainee** edition (fellows × 13 four-week blocks, COCATS
+  requirements) and an **attending** edition (FTE-weighted, privilege-gated call like interventional-only
+  STEMI) run on the same solver.
+- **Repair, not rebuild** — when someone calls out sick, Atria re-solves the *minimum*: it touches the
+  fewest people, proves the fix is valid, and shows a before/after receipt. Nobody else's schedule moves.
+- **Trustworthy by construction** — an **independent validator** (shares no code with the solver) runs
+  the authoritative ACGME arithmetic and gates every publish, so a solver bug can never publish an
+  illegal or uncovered schedule. Every version is immutable and audited; the public share link is
+  tamper-evident and revocable.
 
 ## Architecture
 
-- **`solver/`** — Python + FastAPI + OR-Tools **CP-SAT**. Isolated service on `:8000`.
-  - `/solve` (generate), `/repair` (minimal-disruption re-solve), `/validate` (independent checker).
-  - The validator shares **no code** with the solver (enforced by a test) and runs the authoritative
-    ACGME arithmetic — it gates every publish, so a solver bug can never publish an illegal schedule.
-  - Every rule compiles to a named assumption literal → infeasibility comes back as the *specific
-    conflicting rules* with ranked fixes, never the word "infeasible".
-  - Deterministic: fixed seed + single worker + `PYTHONHASHSEED=0` → same input, same schedule.
-- **`web/`** — Next.js (App Router, TS, Tailwind) + Prisma/SQLite.
-  - Schedule grid, the repair flow, fairness ledger, rule catalog, and the static who's-on-call page.
-  - `/api/publish` is the trust gate: it calls the independent validator and **refuses** on a blocking
-    violation unless a named human files a typed override waiver.
-- **`fixtures/`** — a synthetic cardiology fellowship (15 fellows, 13 blocks, call, jeopardy, COCATS
-  block requirements) and a messy `legacy-schedule.xlsx` for the AI-rule-capture story. No real data.
+- **`solver/`** — Python + FastAPI + OR-Tools **CP-SAT**. `/solve` (generate), `/repair`
+  (minimal-disruption re-solve), `/validate` (independent checker). Every rule compiles to a named
+  assumption literal, so infeasibility comes back as the *specific conflicting rules* with ranked fixes —
+  never the word "infeasible." Deterministic (fixed seed + single worker + `PYTHONHASHSEED=0`).
+- **`web/`** — Next.js (App Router, TS, Tailwind) + Prisma. The Build flow, schedule grid, month
+  calendar, repair flow, fairness ledger, rule catalog, publication history, and the who's-on-call page.
+  `/api/publish` is the trust gate — it refuses on a blocking violation unless a named human files a
+  typed override waiver.
 
 The invariants that make it trustworthy are in [`CLAUDE.md`](CLAUDE.md); the product reasoning is in
 [`docs/SPEC-V1.md`](docs/SPEC-V1.md) and [`docs/DECISION-BRIEF.md`](docs/DECISION-BRIEF.md).
 
-## Run it
+## The demo (≈2 minutes)
 
-Two processes. **Terminal 1 — solver:**
+1. **Build → Generate.** On the Build tab the cardiology roster is pre-filled. Add a couple of fellows,
+   nudge a rotation's coverage, and press **Generate schedule**. The engine builds the whole academic
+   year live — every rotation covered, every duty-hour rule satisfied — and the grid cascades in.
+2. **Repair.** A fellow calls in sick over a weekend they're on call. **Find repairs** → the engine
+   returns valid options ranked by disruption; the best routes their call to this week's backup —
+   *1 of 664 assignments changed, 0 violations.* Publish it; the independent validator runs first.
+3. **Attendings.** Switch to the attending edition and build a private group's monthly call — the month
+   calendar fills in, weekends highlighted, interventional STEMI call going only to interventionalists.
 
-```bash
-cd solver
-python3 -m venv .venv && .venv/bin/pip install fastapi 'uvicorn[standard]' 'pydantic>=2' ortools pytest httpx
-./run.sh            # starts on :8000 with PYTHONHASHSEED=0 (reproducible)
-```
+## Run it locally
 
-**Terminal 2 — web:**
+Two processes — **solver** (`cd solver && ./run.sh`, port 8000) and **web** (`cd web && npm install &&
+npx prisma db push && npm run demo:reset && npm run dev`). `npm run demo:reset` re-arms the sample any
+time. Full deploy notes in [DEPLOY.md](DEPLOY.md).
 
-```bash
-cd web
-npm install
-npx prisma generate && npx prisma db push
-npm run demo:reset  # seeds the fixture, generates + publishes schedule v1 (needs the solver up)
-npm run dev         # http://localhost:3000
-```
+## Built with Claude Code
 
-`npm run demo:reset` re-arms the demo (back to v1, before the sick call) any time.
+I used Claude Code — Fable 5 and Opus 4.8 are incredible beasts; they let you dream big and build
+effortlessly. Claude Code is an amazing partner in development, brainstorming, coding, reviewing, and so
+much more — it's fantastic to have what feels like a real, strong partner. As a cardiologist, I don't have
+formal technical training in software development, but with Claude I can design solutions to the problems
+that exist in medicine — the kind only physicians can identify from their day-to-day experience. Claude is
+powerful, easy to use, and I'd recommend it to anyone in a heartbeat.
 
-## The 3-minute demo
+## Docs & license
 
-0. **Import** (onboarding) — go to **Import**, drop `fixtures/legacy-schedule.xlsx` (a deliberately
-   messy real-world sheet: merged cells, footnote markers, a code legend, a Notes column). Atria reads
-   the grid, shows the roster/rotations it found and the 4 things it flagged for your eyes, then builds
-   a live program — the imported blocks plus a freshly generated, validated call & jeopardy schedule.
-   (`npm run demo:reset` restores the cardiology sample.)
-1. **Schedule** — a full published fellowship year: 15 fellows × 13 blocks, generated by CP-SAT,
-   validated clean. Point out the locked cells (a PD-directed cath block; a volunteered holiday call).
-2. **Edit by hand** — click a fellow's rotation, then another fellow's in the same block: they swap.
-   The edit bar shows it validating live (a swap onto a service a fellow can't do is blocked in red;
-   a dip below a COCATS block target is a soft warning). Every manual swap locks in place so a later
-   re-solve can't undo it. Undo, or publish the change as a new version.
-3. **Repair** — Adaeze Okafor calls in sick over the weekend she's on call (Sat Sep 12). Click
-   **Find repairs**. Three valid options come back, ranked by disruption. Option 1 routes her call to
-   the fellow who's *already this week's backup* — **1 of 664 assignments changed, 2 people affected,
-   0 violations**. Nobody else's schedule moves.
-3. **Publish** — accept it. The independent validator runs first; it publishes as **v2**. (Try removing
-   a covered slot and it refuses — coverage gaps are unpublishable.)
-5. **On-Call** — the who's-on-call page now shows the substitute for Sat Sep 12, updated the instant
-   the repair published. Hit **Create link** to mint a secure, revocable share link (`/p/<secret>`):
-   it shows only names, dates, and services (trainee names abbreviated), leaks nothing sensitive, and
-   dies the moment you revoke it — the link you'd actually send to operators.
-6. **Requests** — two flows on one page:
-   - *Time off*: a fellow submits time off (use "Fill a sample conflict" for a guaranteed one). It lands
-     in the queue tagged with its coverage impact ("affects call Oct 5"). The coordinator hits **Review
-     & approve** — the repair runs inline, they pick the least-disruptive option, and one click approves
-     the request *and* publishes the fix. A no-impact request approves directly.
-   - *Call swaps*: pick two fellows' call nights to trade; **Check this trade** runs the independent
-     validator — a swap that would break coverage, rest, or a clinic-day rule is rejected with the
-     reason; a clean one is one click from published. The swap that can't break the rules.
-7. **Fairness** — call load is even to **±1** across the year; repair prefers whoever's below their
-   fair share. **Rules** — every rule is a plain-English, replay-checked, human-confirmed record.
-
-(Kiosk shortcuts for a hands-free walkthrough: `/?edit=demo` auto-applies a sample swap; `/?repair=auto`
-auto-runs the repair.)
-
-## Docs
-
-- [ARCHITECTURE.md](ARCHITECTURE.md) — services, domain model, the correctness boundary
-- [ROADMAP.md](ROADMAP.md) — ordered by operational trust, not feature count
-- [SECURITY.md](SECURITY.md) · [CONTRIBUTING.md](CONTRIBUTING.md) · [DEPLOY.md](DEPLOY.md)
-- [docs/SPEC-V1.md](docs/SPEC-V1.md) · [docs/DECISION-BRIEF.md](docs/DECISION-BRIEF.md) — the full spec and the reasoning
-
-Licensed under Apache 2.0.
-
-## Tests
-
-```bash
-cd solver && .venv/bin/pytest      # 8 tests: feasible+valid, determinism, named infeasibility,
-                                   # minimal repair, locks survive, validator independence + ACGME catch
-cd web && npm run build            # typechecks + builds all routes
-```
+[ARCHITECTURE.md](ARCHITECTURE.md) · [ROADMAP.md](ROADMAP.md) · [SECURITY.md](SECURITY.md) ·
+[docs/CODEX-LEARNINGS.md](docs/CODEX-LEARNINGS.md). Licensed under Apache 2.0.

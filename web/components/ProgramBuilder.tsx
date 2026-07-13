@@ -4,6 +4,7 @@ import type { Assignment, Conflict, Person, Slot, StateResponse } from "@/lib/ty
 import { assembleRotationRequest, eligibilityByLevel, rotationCoverage } from "@/lib/assemble";
 import { initials } from "@/lib/view";
 import { ScheduleGrid } from "./ScheduleGrid";
+import { SolveProgress } from "./SolveProgress";
 
 const LEVELS = ["F1", "F2", "F3"] as const;
 const LEVEL_LABEL: Record<string, string> = { F1: "PGY-4", F2: "PGY-5", F3: "PGY-6" };
@@ -72,10 +73,14 @@ export function ProgramBuilder({ base }: { base: StateResponse }) {
   async function generate() {
     setPhase("solving");
     setError(null);
+    const started = Date.now();
     try {
       const { request, slots } = assembleRotationRequest(base, people, counts);
       const r = await fetch("/api/solve", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(request) });
       const data = await r.json();
+      // let the progress narration breathe so the build reads as real work
+      const elapsed = Date.now() - started;
+      if (elapsed < 1400) await new Promise((res) => setTimeout(res, 1400 - elapsed));
       if (r.ok && data.feasible) {
         setResult({ assignments: data.assignments as Assignment[], slots });
         setPhase("done");
@@ -226,11 +231,13 @@ export function ProgramBuilder({ base }: { base: StateResponse }) {
         >
           {phase === "solving" ? "Generating…" : phase === "done" ? "Regenerate" : "Generate schedule"}
         </button>
-        <span className="text-[11.5px] text-muted-foreground">
-          {phase === "solving"
-            ? "Placing rotations, honoring duty-hour rules, balancing the year…"
-            : "Runs the CP-SAT engine on your inputs — a full year in seconds."}
-        </span>
+        {phase === "solving" ? (
+          <SolveProgress />
+        ) : (
+          <span className="text-[11.5px] text-muted-foreground">
+            Runs the CP-SAT engine on your inputs — a full year in seconds.
+          </span>
+        )}
         {error && <span className="ml-auto text-[11.5px] text-status-block">{error}</span>}
       </div>
 
@@ -276,7 +283,7 @@ export function ProgramBuilder({ base }: { base: StateResponse }) {
               {phase === "publishing" ? "Publishing…" : "Publish as the live schedule"}
             </button>
           </div>
-          <ScheduleGrid state={resultState} assignments={result!.assignments} />
+          <ScheduleGrid state={resultState} assignments={result!.assignments} animateIn />
           <p className="text-[11px] text-faint-foreground">
             On-call &amp; jeopardy carry over from the current schedule; publishing makes these rotations the
             live, versioned schedule — checked by the independent validator first.

@@ -181,3 +181,45 @@ body {
   line-height: 1.45;
   -webkit-font-smoothing: antialiased;
 }
+
+/* ===== Schedule-generation animations (the "watch it build" cascade) ===== */
+
+@keyframes bp-cell-in {
+  from { opacity: 0; transform: scale(0.9) translateY(5px); }
+  to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+@keyframes bp-rise-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes bp-shimmer {
+  from { transform: translateX(-150%); }
+  to   { transform: translateX(350%); }
+}
+
+/* Grid cells enter staggered via a per-cell --bp-delay set inline. `backwards`
+   keeps them hidden through their delay but visible if animation is unsupported. */
+.bp-cell-animate {
+  animation: bp-cell-in 260ms cubic-bezier(0.22, 1, 0.36, 1) backwards;
+  animation-delay: var(--bp-delay, 0ms);
+}
+.bp-rise-in { animation: bp-rise-in 350ms cubic-bezier(0.22, 1, 0.36, 1) backwards; }
+
+/* Shimmer sweep across the solver progress bar fill. */
+.bp-progress-bar { position: relative; overflow: hidden; }
+.bp-progress-bar::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  width: 40%;
+  background: linear-gradient(90deg, transparent, rgb(255 255 255 / 0.45), transparent);
+  animation: bp-shimmer 1.3s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bp-cell-animate, .bp-rise-in { animation: none; }
+  .bp-progress-bar::after { animation: none; content: none; }
+}
+@media print {
+  .bp-cell-animate, .bp-rise-in { animation: none !important; }
+}

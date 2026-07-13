@@ -1,4 +1,5 @@
 "use client";
+import type { CSSProperties } from "react";
 import type { Assignment, StateResponse } from "@/lib/types";
 import { buildGrid, FAMILY_CLASS, GridCell, initials } from "@/lib/view";
 
@@ -14,6 +15,7 @@ export function ScheduleGrid({
   editable = false,
   selectedSlotId = null,
   editedSlotIds,
+  animateIn = false,
   onCellActivate,
   onCellDrop,
 }: {
@@ -23,6 +25,8 @@ export function ScheduleGrid({
   editable?: boolean;
   selectedSlotId?: string | null;
   editedSlotIds?: Set<string>;
+  /** When true, cells cascade in (used right after a fresh Generate). */
+  animateIn?: boolean;
   onCellActivate?: (cell: GridCell) => void;
   onCellDrop?: (sourceSlotId: string, targetSlotId: string) => void;
 }) {
@@ -53,7 +57,7 @@ export function ScheduleGrid({
           </tr>
         </thead>
         <tbody>
-          {rows.map(({ person, cells }) => (
+          {rows.map(({ person, cells }, ri) => (
             <tr key={person.id} className="row-dense border-b border-border last:border-0 hover:bg-surface-raised/50">
               <td className="sticky left-0 z-10 bg-surface px-3 py-0.5">
                 <div className="flex items-center gap-2">
@@ -99,7 +103,10 @@ export function ScheduleGrid({
                             : undefined
                         }
                         title={`${c.serviceId}${c.locked ? " · locked" : ""}${editable ? " · click to swap" : ""}`}
+                        style={animateIn ? ({ "--bp-delay": `${(c.block.index - 1) * 38 + ri * 9}ms` } as CSSProperties) : undefined}
                         className={`inline-flex h-[19px] min-w-[42px] items-center justify-center rounded-r1 border px-1 font-mono text-[10.5px] font-medium tracking-wide ${FAMILY_CLASS[c.family]} ${
+                          animateIn ? "bp-cell-animate" : ""
+                        } ${
                           c.locked ? "border-l-[3px]" : ""
                         } ${editable ? "cursor-pointer" : ""} ${
                           selected ? "ring-2 ring-accent ring-offset-1 ring-offset-surface" : ""
