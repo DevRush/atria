@@ -12,16 +12,24 @@
 --------------------------------------------------------------------------- */
 
 :root {
-  /* Surfaces */
-  --background: oklch(0.985 0.002 260);
-  --surface: oklch(1 0 0);
-  --surface-raised: oklch(0.975 0.003 260);
-  --border: oklch(0.915 0.005 260);
-  --border-strong: oklch(0.85 0.007 260);
-  --foreground: oklch(0.235 0.012 260);
-  --muted-foreground: oklch(0.51 0.014 260);
-  --faint-foreground: oklch(0.65 0.012 260);
-  --accent: oklch(0.52 0.11 255); /* interactive accent — not a family hue */
+  color-scheme: light;
+  /* Surfaces — warm cream paper, deep-forest brand (calm, editorial, premium) */
+  --background: oklch(0.977 0.007 95);
+  --surface: oklch(0.995 0.003 95);
+  --surface-raised: oklch(0.958 0.008 95);
+  --border: oklch(0.9 0.007 95);
+  --border-strong: oklch(0.82 0.01 95);
+  --foreground: oklch(0.235 0.018 155);
+  --muted-foreground: oklch(0.47 0.02 150);
+  --faint-foreground: oklch(0.62 0.016 135);
+  --accent: oklch(0.36 0.062 158); /* deep forest green — interactive accent */
+
+  /* Sidebar operations console */
+  --sidebar: oklch(0.285 0.045 160);
+  --sidebar-raised: oklch(0.345 0.05 160);
+  --sidebar-foreground: oklch(0.965 0.012 100);
+  --sidebar-muted: oklch(0.74 0.03 140);
+  --sidebar-border: oklch(0.4 0.04 160);
 
   /* Density */
   --row-h: 28px;
@@ -67,7 +75,8 @@
   --scaffold-holiday: oklch(0.94 0.004 260);
 }
 
-@media (prefers-color-scheme: dark) {
+/* Atria commits to its light editorial brand; OS dark-mode override disabled. */
+@media (prefers-color-scheme: dark) and (width < 0px) {
   :root {
     --background: oklch(0.19 0.008 262);
     --surface: oklch(0.225 0.008 262);
@@ -124,6 +133,11 @@
   --color-muted-foreground: var(--muted-foreground);
   --color-faint-foreground: var(--faint-foreground);
   --color-accent: var(--accent);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-raised: var(--sidebar-raised);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-muted: var(--sidebar-muted);
+  --color-sidebar-border: var(--sidebar-border);
 
   --color-family-procedural: var(--family-procedural);
   --color-family-procedural-bg: var(--family-procedural-bg);
