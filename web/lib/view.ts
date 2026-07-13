@@ -128,7 +128,14 @@ export function buildFairness(state: StateResponse, overrideAssignments?: Assign
   const callVals = rows.map((r) => r.call);
   const maxVal = Math.max(...callVals);
   const minVal = Math.min(...callVals);
-  return { rows, callSpread: maxVal - minVal, max: Math.max(maxVal, 1) };
+  // Raw call-spread is a fair comparison ONLY across a homogeneous pool — everyone
+  // the same FTE and a single call domain. With mixed FTE or restricted domains
+  // (e.g. interventional STEMI call), equal raw counts wouldn't even be fair, so a
+  // min−max number would mislead. Gate the spread UI on this.
+  const fteVaries = state.people.some((p) => (p.fte ?? 1) !== 1);
+  const callDomains = state.services.filter((s) => s.kind === "call").length;
+  const homogeneous = !fteVaries && callDomains <= 1;
+  return { rows, callSpread: maxVal - minVal, max: Math.max(maxVal, 1), homogeneous };
 }
 
 /** Who is on call / jeopardy for a given date (the who's-on-call read path). */

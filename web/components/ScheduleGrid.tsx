@@ -27,6 +27,7 @@ export function ScheduleGrid({
   onCellDrop?: (sourceSlotId: string, targetSlotId: string) => void;
 }) {
   const { blocks, rows } = buildGrid(state, assignments);
+  const rosterLabel = state.people.some((p) => p.level === "Attending") ? "Physician" : "Fellow";
   const selectedBlock = selectedSlotId
     ? rows.flatMap((r) => r.cells).find((c) => c.slotId === selectedSlotId)?.block.start
     : null;
@@ -37,7 +38,7 @@ export function ScheduleGrid({
         <thead>
           <tr className="border-b border-border-strong bg-surface-raised">
             <th className="sticky left-0 z-10 min-w-[168px] bg-surface-raised px-3 py-1.5 text-left font-medium text-muted-foreground">
-              Fellow
+              {rosterLabel}
             </th>
             {blocks.map((b) => (
               <th

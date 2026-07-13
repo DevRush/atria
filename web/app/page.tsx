@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { AppShell } from "@/components/AppShell";
 import { EditableSchedule } from "@/components/EditableSchedule";
 import { RepairFlow } from "@/components/RepairFlow";
+import { ScheduleStatus } from "@/components/ScheduleStatus";
 import type { StateResponse } from "@/lib/types";
 
 export default function Home() {
@@ -43,6 +44,7 @@ export default function Home() {
   return (
     <AppShell version={state.currentVersion} active="schedule">
       <div className="mx-auto max-w-[1400px] space-y-4 px-4 py-4">
+        <ScheduleStatus state={state} />
         <EditableSchedule state={state} onPublished={() => load()} />
         <RepairFlow state={state} onPublished={() => load()} />
       </div>
