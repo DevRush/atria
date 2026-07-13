@@ -26,10 +26,11 @@ export function AppShell({
   children,
 }: {
   version: ScheduleVersion | null;
-  active: "schedule" | "requests" | "rules" | "fairness" | "oncall" | "history" | "import";
+  active: "build" | "schedule" | "requests" | "rules" | "fairness" | "oncall" | "history" | "import";
   children: React.ReactNode;
 }) {
   const nav = [
+    { key: "build", label: "Build", href: "/build" },
     { key: "schedule", label: "Schedule", href: "/" },
     { key: "requests", label: "Requests", href: "/requests" },
     { key: "rules", label: "Rules", href: "/rules" },
