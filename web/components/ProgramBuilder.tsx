@@ -71,8 +71,24 @@ export function ProgramBuilder({ base }: { base: StateResponse }) {
   }, []);
 
   async function generate() {
-    setPhase("solving");
     setError(null);
+    // Instant, legible infeasibility: required coverage can't exceed the roster.
+    if (overbooked) {
+      setConflicts([
+        {
+          ruleIds: [],
+          text: `Your required rotations need ${sumRequired} fellows every block, but you've rostered ${people.length}. There aren't enough people to cover them all at once.`,
+          relaxations: [
+            { description: `add ${sumRequired - people.length} more fellow(s)`, cost: 1 },
+            { description: "lower a rotation's coverage count", cost: 1 },
+          ],
+        },
+      ]);
+      setResult(null);
+      setPhase("infeasible");
+      return;
+    }
+    setPhase("solving");
     const started = Date.now();
     try {
       const { request, slots } = assembleRotationRequest(base, people, counts);
