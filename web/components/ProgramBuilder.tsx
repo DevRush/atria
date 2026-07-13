@@ -138,7 +138,7 @@ export function ProgramBuilder({ base }: { base: StateResponse }) {
       const r = await fetch("/api/build/commit", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(body) });
       const data = await r.json();
       if (!r.ok || !data.ok) throw new Error(data.error ?? "Publish failed");
-      window.location.href = "/";
+      window.location.href = "/schedule";
     } catch (e) {
       setError(String(e instanceof Error ? e.message : e));
       setPhase("done");
