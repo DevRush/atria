@@ -1,6 +1,6 @@
 "use client";
 import { useMemo, useState } from "react";
-import type { Assignment, StateResponse, ValidateResponse } from "@/lib/types";
+import type { StateResponse, ValidateResponse } from "@/lib/types";
 
 const fmt = (iso: string) =>
   new Date(iso + "T12:00:00").toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" });

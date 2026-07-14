@@ -56,7 +56,7 @@ function cellText(v: unknown): string {
 
 function personId(name: string, taken: Set<string>): string {
   const last = name.trim().split(/\s+/).pop() ?? name;
-  let base = "p_" + last.toLowerCase().replace(/[^a-z0-9]/g, "");
+  const base = "p_" + last.toLowerCase().replace(/[^a-z0-9]/g, "");
   let id = base;
   let i = 2;
   while (taken.has(id)) id = `${base}${i++}`;
